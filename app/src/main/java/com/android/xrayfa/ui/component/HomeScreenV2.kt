@@ -11,14 +11,17 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -29,12 +32,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.android.xrayfa.R
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.android.xrayfa.ui.theme.V2rayForAndroidUITheme
 
 @Preview
 @Composable
 fun HomeScreenV2Preview() {
-    HomeScreenV2()
+    V2rayForAndroidUITheme {
+        HomeScreenV2()
+    }
 }
 @Composable
 fun HomeScreenV2() {
@@ -136,7 +145,10 @@ fun TopBar(modifier: Modifier = Modifier){
     Box( modifier = modifier.fillMaxWidth()
         .height(100.dp)
     ){
-        Text("XrayFA", fontSize = 35.sp , color = Color.White, modifier = Modifier.align(Alignment.Center).padding(20.dp))
+        Text("XrayFA",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Black,
+            fontSize = 35.sp , color = Color.White, modifier = Modifier.align(Alignment.Center).padding(20.dp))
         //Side menu bar (on click nothing for now)
         IconButton(onClick = {},
             modifier = Modifier.align(Alignment.CenterStart)
@@ -188,7 +200,8 @@ fun PowerSection(modifier: Modifier = Modifier){
 @Composable
 fun PowerSection(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.size(200.dp),
+        modifier = modifier.size(200.dp)
+        .shadow(20.dp, CircleShape),
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -228,8 +241,12 @@ fun ConnectionStatus(modifier: Modifier = Modifier) {
                     radius = 25f
                 )
             }
-            Text("Connected", fontSize = 20.sp , color = Color.White, modifier = Modifier.align(Alignment.Center).offset(x = 65.dp).offset(y = 2.dp))
-            Text("Server:233boy-Tokyo-01", fontSize = 15.sp , color = Color(0xFF3B5C83), modifier = Modifier.align(Alignment.CenterStart)
+            Text("Connected", fontSize = 20.sp ,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,color = Color.White, modifier = Modifier.align(Alignment.Center).offset(x = 65.dp).offset(y = 2.dp))
+            Text("Server:233boy-Tokyo-01",
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,fontSize = 15.sp , color = Color(0xFF3B5C83), modifier = Modifier.align(Alignment.CenterStart)
                 .fillMaxWidth().height(20.dp).offset(y = 30.dp).offset(x = 80.dp))
 
         }
@@ -255,8 +272,12 @@ fun SpeedPill(modifier: Modifier = Modifier) {
                 cornerRadius = CornerRadius(100f, 100f),
             )
         }
-        Text("Upload", fontSize = 20.sp , color = Color(0xFF43A9FF), modifier = Modifier.align(Alignment.CenterStart).offset(x = 50.dp))
-        Text("Download", fontSize = 20.sp , color = Color(0xFF43A9FF), modifier = Modifier.align(Alignment.CenterEnd).offset(x = -50.dp))
+        Text("Upload",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.SemiBold,fontSize = 20.sp , color = Color(0xFF43A9FF), modifier = Modifier.align(Alignment.CenterStart).offset(x = 50.dp))
+        Text("Download",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.SemiBold,fontSize = 20.sp , color = Color(0xFF43A9FF), modifier = Modifier.align(Alignment.CenterEnd).offset(x = -50.dp))
         Icon(
             painter = painterResource(R.drawable.arrow),
             contentDescription = "Power",
@@ -283,17 +304,37 @@ fun SpeedPill(modifier: Modifier = Modifier) {
 @Composable
 fun BottomNavPill(modifier: Modifier = Modifier) {
     Box(
-        modifier = modifier.width(200.dp) .height(100.dp),
-        contentAlignment = Alignment.Center //Content is not aligned at center
+        modifier = modifier.width(180.dp) .height(80.dp).padding(bottom = 20.dp),
+        contentAlignment = Alignment.Center
 
     ) {
         Canvas(modifier = Modifier.fillMaxSize()
         ) {
             drawRoundRect(
-                color = Color(0xFFBECBD2).copy(alpha = 0.8f),
-                size = Size(500f, 100f),
-                cornerRadius = CornerRadius(40f, 40f)
+                color = Color(0xFF74CEFF).copy(alpha = 0.4f),
+                size = size, //same size as cavas
+                cornerRadius = CornerRadius(100f, 100f),
             )
         }
+        Image(
+            painter = painterResource(R.drawable.wrench2),
+            contentDescription = "Wrench",
+            modifier = Modifier
+                .size(40.dp)
+                .align(Alignment.TopStart)
+                .offset(y= 10.dp)
+                .offset(x= 20.dp)
+
+        )
+        Image(
+            painter = painterResource(R.drawable.homeicon),
+            contentDescription = "Wrench",
+            modifier = Modifier
+                .size(50.dp)
+                .align(Alignment.BottomCenter)
+                .offset(y= -5.dp)
+                .offset(x= 50.dp)
+
+        )
     }
 }
