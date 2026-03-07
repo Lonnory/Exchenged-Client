@@ -259,8 +259,8 @@ fun ConnectionStatus(modifier: Modifier = Modifier) {
 @Composable
 fun SpeedPill(modifier: Modifier = Modifier) {
     Box(
-        modifier =  modifier.width(350.dp)
-            .height(80.dp),
+        modifier =  modifier.width(300.dp)
+            .height(100.dp),
         contentAlignment = Alignment.Center //Content is not aligned at center
 
     ) {
@@ -274,10 +274,10 @@ fun SpeedPill(modifier: Modifier = Modifier) {
         }
         Text("Upload",
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,fontSize = 20.sp , color = Color(0xFF43A9FF), modifier = Modifier.align(Alignment.CenterStart).offset(x = 50.dp))
+            fontWeight = FontWeight.SemiBold,fontSize = 20.sp , color = Color(0xFF43A9FF), modifier = Modifier.align(Alignment.CenterStart).offset(x = 50.dp).offset(y = -10.dp))
         Text("Download",
             style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.SemiBold,fontSize = 20.sp , color = Color(0xFF43A9FF), modifier = Modifier.align(Alignment.CenterEnd).offset(x = -50.dp))
+            fontWeight = FontWeight.SemiBold,fontSize = 20.sp , color = Color(0xFF43A9FF), modifier = Modifier.align(Alignment.CenterEnd).offset(x = -50.dp).offset(y = -10.dp))
         Icon(
             painter = painterResource(R.drawable.arrow),
             contentDescription = "Power",
@@ -295,7 +295,7 @@ fun SpeedPill(modifier: Modifier = Modifier) {
             modifier = Modifier.size(20.dp)
                 .align(Alignment.BottomEnd)
                 .offset(x = -20.dp)
-                .offset(y = -30.dp)
+                .offset(y = -50.dp)
                 .rotate(270f)
         )
     }
