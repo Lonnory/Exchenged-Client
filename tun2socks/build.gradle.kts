@@ -52,6 +52,43 @@ android {
     }
 }
 
+// ... (Your existing android and dependencies blocks) ...
+
+// 1. Register a custom task to execute the batch script
+tasks.register<Exec>("fixNativeHeaders") {
+    description = "Run batch script to fix naked C/C++ header paths before NDK build"
+    group = "build setup"
+
+    // Define the path to your .bat script (assuming it's in the same folder as build.gradle.kts)
+    val scriptFile = file("../fix_headers.bat")
+
+    // Only run on Windows
+    if (org.gradle.internal.os.OperatingSystem.current().isWindows) {
+        // Execute the script using cmd.exe
+        commandLine("cmd", "/c", scriptFile.absolutePath)
+
+        // IMPORTANT: Set the working directory to your JNI folder so the script scans the right place.
+        // The '.' in the script will map to this directory.
+        workingDir = file("src/main/jni")
+    } else {
+        // Fallback for Linux/Mac if you ever build on other platforms
+        commandLine("echo", "Skipping Windows batch script on non-Windows OS")
+    }
+}
+
+// 2. Hook the custom task into the standard Android build lifecycle
+// This ensures 'fixNativeHeaders' runs right before any other build steps begin
+tasks.named("preBuild") {
+    dependsOn("fixNativeHeaders")
+}
+
+// Alternatively, strictly hook it right before the external native build generation
+tasks.whenTaskAdded {
+    if (name.startsWith("generateJsonModel")) {
+        dependsOn("fixNativeHeaders")
+    }
+}
+
 dependencies {
 
     implementation(project(":common"))
