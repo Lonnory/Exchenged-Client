@@ -49,7 +49,6 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.android.xrayfa.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

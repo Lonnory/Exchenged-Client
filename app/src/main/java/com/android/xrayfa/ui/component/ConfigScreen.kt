@@ -92,6 +92,7 @@ import com.android.xrayfa.R
 import com.android.xrayfa.ui.QRCodeActivity
 import com.android.xrayfa.ui.navigation.Config
 import com.android.xrayfa.ui.navigation.Detail
+import com.android.xrayfa.ui.navigation.Edit
 import com.android.xrayfa.ui.navigation.Home
 import com.android.xrayfa.ui.navigation.NavigateDestination
 import com.android.xrayfa.ui.navigation.Subscription
@@ -223,7 +224,9 @@ fun ConfigScreen(
             ) {
                 SplitButtonLayout(
                     leadingButton = {
-                        SplitButtonDefaults.LeadingButton(onClick = { /* TODO */ }) {
+                        SplitButtonDefaults.LeadingButton(onClick = {
+                            onNavigate(Edit)
+                        }) {
                             Icon(
                                 Icons.Filled.Edit,
                                 modifier = Modifier.size(SplitButtonDefaults.LeadingIconSize),
