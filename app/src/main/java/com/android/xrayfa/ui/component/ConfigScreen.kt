@@ -32,10 +32,12 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.ContentCut
+import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Email
 import androidx.compose.material.icons.outlined.QrCodeScanner
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Subscriptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
@@ -152,14 +154,122 @@ fun ConfigScreen(
                 modifier = Modifier.zIndex(1f)
             ) {
                 TopAppBar(
-                    title = {Text(stringResource(Config.title))},
+                    title = {
+
+                        Text(stringResource(Config.title))
+                    },
                     navigationIcon = {
                         Icon(
                             imageVector = Icons.Default.Build,
                             contentDescription = ""
                         )
                     },
-                    actions = {ConfigActionButton(xrayViewmodel,onNavigate)},
+                    actions = {
+                        var checked by remember { mutableStateOf(false) }
+
+                        Box(
+                            modifier = Modifier.padding(end = 8.dp)
+                        ) {
+                            SplitButtonLayout(
+                                leadingButton = {
+                                    SplitButtonDefaults.LeadingButton(onClick = {
+                                        onNavigate(Edit)
+                                    }) {
+                                        Icon(
+                                            Icons.Filled.Edit,
+                                            modifier = Modifier.size(SplitButtonDefaults.LeadingIconSize),
+                                            contentDescription = "Localized description",
+                                        )
+                                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                                        Text("Add")
+                                    }
+                                },
+                                trailingButton = {
+                                    val description = "Toggle Button"
+                                    // Icon-only trailing button should have a tooltip for a11y.
+                                    TooltipBox(
+                                        positionProvider =
+                                            TooltipDefaults.rememberTooltipPositionProvider(
+                                                TooltipAnchorPosition.Above
+                                            ),
+                                        tooltip = { PlainTooltip { Text(description) } },
+                                        state = rememberTooltipState(),
+                                    ) {
+                                        SplitButtonDefaults.TrailingButton(
+                                            checked = checked,
+                                            onCheckedChange = { checked = it },
+                                            modifier =
+                                                Modifier.semantics {
+                                                    stateDescription = if (checked) "Expanded" else "Collapsed"
+                                                    contentDescription = description
+                                                },
+                                        ) {
+                                            val rotation: Float by
+                                            animateFloatAsState(
+                                                targetValue = if (checked) 180f else 0f,
+                                                label = "Trailing Icon Rotation",
+                                            )
+                                            Icon(
+                                                Icons.Filled.KeyboardArrowDown,
+                                                modifier =
+                                                    Modifier.size(SplitButtonDefaults.TrailingIconSize).graphicsLayer {
+                                                        this.rotationZ = rotation
+                                                    },
+                                                contentDescription = "Localized description",
+                                            )
+                                        }
+                                    }
+                                },
+                            )
+
+                            DropdownMenu(
+                                expanded = checked,
+                                onDismissRequest = { checked = false },
+                                containerColor = MaterialTheme.colorScheme.surface
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("from clipboard") },
+                                    onClick = {
+                                        xrayViewmodel.addV2rayConfigFromClipboard(context)
+                                        checked = false
+                                    },
+                                    leadingIcon = { Icon(Icons.Outlined.ContentCut, contentDescription = null) }
+                                )
+                                DropdownMenuItem(
+                                    text = { Text("from QR code") },
+                                    onClick = {
+                                        barcodeLauncher.launch(scanOptions)
+                                        checked = false
+                                    },
+                                    leadingIcon = { Icon(Icons.Outlined.QrCodeScanner, contentDescription = null) },
+                                )
+                                DropdownMenuItem(
+                                    text = {Text(stringResource(R.string.menu_subscription))},
+                                    onClick = {
+                                        checked = false
+                                        onNavigate(Subscription)
+                                        //xrayViewmodel.startSubscriptionActivity(context)
+                                    },
+                                    leadingIcon = {Icon(Icons.Outlined.Subscriptions, contentDescription = null)}
+                                )
+                                DropdownMenuItem(
+                                    text = {Text(stringResource(R.string.menu_delete_all))},
+                                    onClick = {
+                                        checked = false
+                                        xrayViewmodel.showDeleteDialog(/*delete all*/)
+                                    },
+                                    leadingIcon = {Icon(Icons.Outlined.DeleteForever, contentDescription = null)}
+                                )
+                                HorizontalDivider()
+                                DropdownMenuItem(
+                                    text = { Text("stay in beta") },
+                                    onClick = { /* Handle send feedback! */ },
+                                    leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = null) },
+                                    trailingIcon = { Text("F11", textAlign = TextAlign.Center) },
+                                )
+                            }
+                        }
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surface,
                         scrolledContainerColor = MaterialTheme.colorScheme.surface
@@ -205,103 +315,6 @@ fun ConfigScreen(
                         )
                         HorizontalDivider()
                     }
-                }
-            }
-        }
-        AnimatedVisibility(
-            visible = !listState.isAtBottom{ isAtBottom ->
-                if (isAtBottom) xrayViewmodel.hideNavigationBar() else xrayViewmodel.showNavigationBar()
-            },
-            enter = fadeIn(),
-            exit = fadeOut(),
-            modifier = Modifier.align (BiasAlignment(1f,0.9f))
-                .padding(bottom = bottomPadding)
-        ) {
-            var checked by remember { mutableStateOf(false) }
-
-            Box(
-                modifier = Modifier.padding(end = 8.dp)
-            ) {
-                SplitButtonLayout(
-                    leadingButton = {
-                        SplitButtonDefaults.LeadingButton(onClick = {
-                            onNavigate(Edit)
-                        }) {
-                            Icon(
-                                Icons.Filled.Edit,
-                                modifier = Modifier.size(SplitButtonDefaults.LeadingIconSize),
-                                contentDescription = "Localized description",
-                            )
-                            Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                            Text("Add")
-                        }
-                    },
-                    trailingButton = {
-                        val description = "Toggle Button"
-                        // Icon-only trailing button should have a tooltip for a11y.
-                        TooltipBox(
-                            positionProvider =
-                                TooltipDefaults.rememberTooltipPositionProvider(
-                                    TooltipAnchorPosition.Above
-                                ),
-                            tooltip = { PlainTooltip { Text(description) } },
-                            state = rememberTooltipState(),
-                        ) {
-                            SplitButtonDefaults.TrailingButton(
-                                checked = checked,
-                                onCheckedChange = { checked = it },
-                                modifier =
-                                    Modifier.semantics {
-                                        stateDescription = if (checked) "Expanded" else "Collapsed"
-                                        contentDescription = description
-                                    },
-                            ) {
-                                val rotation: Float by
-                                animateFloatAsState(
-                                    targetValue = if (checked) 180f else 0f,
-                                    label = "Trailing Icon Rotation",
-                                )
-                                Icon(
-                                    Icons.Filled.KeyboardArrowDown,
-                                    modifier =
-                                        Modifier.size(SplitButtonDefaults.TrailingIconSize).graphicsLayer {
-                                            this.rotationZ = rotation
-                                        },
-                                    contentDescription = "Localized description",
-                                )
-                            }
-                        }
-                    },
-                )
-
-                DropdownMenu(
-                    expanded = checked,
-                    onDismissRequest = { checked = false },
-                    containerColor = MaterialTheme.colorScheme.surface
-                ) {
-                    DropdownMenuItem(
-                        text = { Text("from clipboard") },
-                        onClick = {
-                            xrayViewmodel.addV2rayConfigFromClipboard(context)
-                            checked = false
-                        },
-                        leadingIcon = { Icon(Icons.Outlined.ContentCut, contentDescription = null) }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("from QR code") },
-                        onClick = {
-                            barcodeLauncher.launch(scanOptions)
-                            checked = false
-                        },
-                        leadingIcon = { Icon(Icons.Outlined.QrCodeScanner, contentDescription = null) },
-                    )
-                    HorizontalDivider()
-                    DropdownMenuItem(
-                        text = { Text("stay in beta") },
-                        onClick = { /* Handle send feedback! */ },
-                        leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = null) },
-                        trailingIcon = { Text("F11", textAlign = TextAlign.Center) },
-                    )
                 }
             }
         }
