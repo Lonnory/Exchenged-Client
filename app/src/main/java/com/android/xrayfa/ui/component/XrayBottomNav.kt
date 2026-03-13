@@ -70,6 +70,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -78,6 +79,7 @@ import com.android.xrayfa.ui.navigation.Config
 import com.android.xrayfa.ui.navigation.Home
 import com.android.xrayfa.ui.navigation.Logcat
 import com.android.xrayfa.ui.navigation.NavigateDestination
+import com.android.xrayfa.ui.navigation.list_navigation
 import kotlinx.coroutines.launch
 import kotlin.math.min
 
@@ -196,6 +198,21 @@ fun XraySideNavOpt(
     }
 }
 
+@Preview
+@Composable
+fun XrayBottomNavOptPreview() {
+    Box() {
+        XrayBottomNavOpt(
+            items = list_navigation,
+            currentScreen = Home,
+            onItemSelected = {},
+            labelProvider = { it.route }
+        )
+    }
+
+}
+
+
 @SuppressLint("UnusedBoxWithConstraintsScope", "ConfigurationScreenWidthHeight")
 @Composable
 fun XrayBottomNavOpt(
@@ -223,7 +240,7 @@ fun XrayBottomNavOpt(
         modifier = modifier
             .width((0.6 * std).dp)
             .height(heightDp)
-            .padding(horizontal = 8.dp)
+//            .padding(horizontal = 8.dp)
     ) {
         val maxWidthPx = constraints.maxWidth.toFloat()
         val itemWidthPx = constraints.maxWidth / itemCount

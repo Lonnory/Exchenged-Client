@@ -313,7 +313,11 @@ fun ConfigScreen(
                             roundCorner = false,
                             countryEmoji = node.countryISO
                         )
-                        HorizontalDivider()
+                        HorizontalDivider(
+                            modifier = Modifier.fillMaxSize()
+                                .padding(horizontal = 48.dp),
+                            thickness = 1.dp
+                        )
                     }
                 }
             }

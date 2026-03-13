@@ -10,18 +10,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemGestures
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.outlined.ClearAll
+import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExpandedFullScreenSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LoadingIndicator
@@ -29,6 +35,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -75,13 +82,14 @@ fun AppsScreen(
     val isScrolled by remember {
         derivedStateOf { scrollBehavior.state.overlappedFraction > 0f }
     }
-
+    val searchAppInfoCompleted by remember { derivedStateOf { viewmodel.searchAppCompleted } }
     // Animate the shadow elevation for a smooth transition
     val appBarElevation by animateDpAsState(
         targetValue = if (isScrolled) 4.dp else 0.dp,
         label = "TopBarShadowElevation"
     )
     val context = LocalContext.current
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -89,13 +97,28 @@ fun AppsScreen(
 //                    Text(stringResource(R.string.all_app_settings))
                     val searchBarState = rememberSearchBarState()
                     val textFieldState = rememberTextFieldState()
+                    LaunchedEffect(searchBarState.targetValue) {
+                        if (searchBarState.targetValue == SearchBarValue.Collapsed
+                            && textFieldState.text.isEmpty()) {
+                            viewmodel.onSearch(textFieldState.text.toString())     // Trigger logic
+                        }
+                    }
+
                     val scope = rememberCoroutineScope()
                     val inputField =
                         @Composable {
                             SearchBarDefaults.InputField(
                                 textFieldState = textFieldState,
                                 searchBarState = searchBarState,
-                                onSearch = { scope.launch { searchBarState.animateToCollapsed() } },
+                                onSearch = {
+                                    scope.launch {
+                                        if (searchAppInfoCompleted) {
+                                            searchBarState.animateToCollapsed()
+                                            viewmodel.onSearch(it)
+                                        }
+                                    }
+
+                                },
                                 placeholder = {
                                     Text(modifier = Modifier.clearAndSetSemantics {}, text = "Search")
                                 },
@@ -103,7 +126,12 @@ fun AppsScreen(
                                     imageVector = Icons.Outlined.Search,
                                     contentDescription = "search_lab"
                                 ) },
-                                trailingIcon = {  },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Mic,
+                                        contentDescription = "voice_search_lab"
+                                    )
+                                },
                             )
                         }
                     SearchBar(
@@ -111,15 +139,24 @@ fun AppsScreen(
                         inputField = inputField,
                         colors = SearchBarDefaults.colors(
                             containerColor = MaterialTheme.colorScheme.background
+                        ),
+                    )
+                    ExpandedFullScreenSearchBar(
+                        state = searchBarState,
+                        inputField = inputField,
+                        colors = SearchBarDefaults.colors(
+                            containerColor = MaterialTheme.colorScheme.background
                         )
-                    )
+                    ) {
+                        //todo recommended search
+                    }
                 },
-                navigationIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Settings,
-                        contentDescription = "all_app_settings_lab"
-                    )
-                },
+//                navigationIcon = {
+//                    Icon(
+//                        imageVector = Icons.Default.Settings,
+//                        contentDescription = "all_app_settings_lab"
+//                    )
+//                },
                 actions = {
                     IconButton(
                         onClick = {
@@ -129,7 +166,7 @@ fun AppsScreen(
                         }
                     ) {
                     Icon(
-                        imageVector = Icons.Default.Delete,
+                        imageVector = Icons.Outlined.ClearAll,
                         contentDescription = "unselect all app"
                     )
                     }
@@ -141,11 +178,12 @@ fun AppsScreen(
                 scrollBehavior = scrollBehavior,
                 modifier = Modifier
                     .shadow(appBarElevation)
-        )},
+            )
+        },
         modifier = Modifier.clip(RoundedCornerShape(12.dp))
     ) { paddingValue ->
 
-        val searchAppInfoCompleted by remember { derivedStateOf { viewmodel.searchAppCompleted } }
+
         LaunchedEffect(Unit) {
             withContext(Dispatchers.IO) {
                 viewmodel.getInstalledPackages(context)
@@ -158,11 +196,9 @@ fun AppsScreen(
         ) {
 
             if (!searchAppInfoCompleted) {
-//                CircularProgressIndicator(
-//                    modifier = Modifier.align(Alignment.Center)
-//                )
                 LoadingIndicator(
                     modifier = Modifier.align(Alignment.Center)
+                        .size(68.dp)
                 )
             }else {
                 val appInfos by viewmodel.appInfos.collectAsState()
@@ -179,7 +215,12 @@ fun AppsScreen(
                                 if (checked) viewmodel.addAllowPackage(appInfo.packageName)
                                 else viewmodel.removeAllowPackage(appInfo.packageName)
                             }
-
+                        )
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 48.dp, end = 48.dp),
+                            thickness = 1.dp
                         )
                     }
                 }

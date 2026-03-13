@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.core.graphics.createBitmap
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.withContext
 
 
 data class AppInfo(
@@ -107,8 +108,27 @@ class AppsViewmodel(
                 allow = allow
             )
         }.sortedBy { it.appName.lowercase() }
-        _appInfos.value = list
+        appInfoList.clear()
+        appInfoList.addAll(list)
+        _appInfos.value = appInfoList
         searchAppCompleted = true
+    }
+
+
+    suspend fun onSearch(query: String) {
+        if (query.isEmpty()) {
+            withContext(Dispatchers.Main) {
+                _appInfos.value = appInfoList
+            }
+            return
+        }
+        val filterList = appInfoList.filter {
+            return@filter (it.appName.contains(query) || it.packageName.contains(query))
+        }
+
+        withContext(Dispatchers.Main) {
+            _appInfos.value = filterList
+        }
     }
 }
 
