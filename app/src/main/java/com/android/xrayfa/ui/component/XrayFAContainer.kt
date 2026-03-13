@@ -75,6 +75,7 @@ import com.android.xrayfa.R
 import com.android.xrayfa.ui.SettingsActivity
 import com.android.xrayfa.ui.navigation.Apps
 import com.android.xrayfa.ui.navigation.Detail
+import com.android.xrayfa.ui.navigation.Edit
 import com.android.xrayfa.ui.navigation.NavigateDestination
 import com.android.xrayfa.ui.navigation.Settings
 import com.android.xrayfa.ui.navigation.Subscription
@@ -164,6 +165,10 @@ fun XrayFAContainer(
             metadata = XrayFASceneStrategy.subscreen()
         ) {
             AppsScreen(appViewmodel)
+        }
+
+        entry<Edit> {
+            EditScreen()
         }
 
     }
