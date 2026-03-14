@@ -14,13 +14,13 @@ android {
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
-        val appVersionName:String by project
-        val appVersionCode:String by project
+        val VERSION_NAME:String by project
+        val VERSION_CODE:String by project
         applicationId = "com.android.xrayfa"
         minSdk = 28
         targetSdk = 36
-        versionCode = appVersionCode.toInt()
-        versionName = appVersionName
+        versionCode = VERSION_CODE.toInt()
+        versionName = VERSION_NAME
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
