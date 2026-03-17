@@ -75,30 +75,10 @@ android {
         compose = true
     }
 
-    // 1. Define flavor dimensions
-    flavorDimensions += "channel"
-
-    // 2. Create product flavors
-    productFlavors {
-        create("fdroid") {
-            dimension = "channel"
-            // You can add F-Droid specific configurations here later
-        }
-        create("standard") {
-            dimension = "channel"
-            // Standard version for GitHub / Play Store
-        }
-    }
-
-    // 3. Detect if the current Gradle task is for F-Droid
-    // gradle.startParameter.taskNames contains the commands passed to Gradle (e.g., "assembleFdroidRelease")
-    val isFDroidBuild = gradle.startParameter.taskNames.any {
-        it.contains("fdroid", ignoreCase = true)
-    }
 
     splits {
         abi {
-            isEnable = !isFDroidBuild
+            isEnable = true
             reset()
             include("armeabi-v7a","arm64-v8a","x86","x86_64")
             isUniversalApk = true
@@ -115,7 +95,7 @@ android {
 
                 val baseAbiCode = abiCodes[name] ?: 0
 
-                if(baseAbiCode != null && !isFDroidBuild) {
+                if(baseAbiCode != null) {
                     output.versionCode.set((baseAbiCode * 1000 + output.versionCode.get()))
                 }
             }
@@ -185,7 +165,8 @@ tasks.register<Exec>("bindXrayLib") {
     outputs.file(aarOutput)
 }
 tasks.whenTaskAdded {
-    if (name.contains("ArtProfile", ignoreCase = true) || name.contains("BaselineProfile", ignoreCase = true)) {
+    if (name.contains("ArtProfile", ignoreCase = true)
+        || name.contains("BaselineProfile", ignoreCase = true)) {
         enabled = false
     }
 }
