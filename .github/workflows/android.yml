@@ -32,6 +32,8 @@ jobs:
       env:
         KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
 
+
+
     - name: Setup Golang
       uses: actions/setup-go@v5.4.0
       with:
@@ -49,7 +51,7 @@ jobs:
         KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
         KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
         KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-      run: ./gradlew assembleRelease
+      run: ./gradlew assembleStandardRelease
 
 
     - name: Upload APK

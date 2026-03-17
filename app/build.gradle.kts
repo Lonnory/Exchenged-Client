@@ -168,6 +168,7 @@ tasks.register<Exec>("goMod") {
 tasks.register<Exec>("bindXrayLib") {
     dependsOn("goMod")
     workingDir = xrayLibDir
+    environment("GOFLAGS", "-buildvcs=false")
     commandLine(
         "gomobile",
         "bind",
@@ -178,6 +179,11 @@ tasks.register<Exec>("bindXrayLib") {
         "./"
     )
     outputs.file(aarOutput)
+}
+tasks.whenTaskAdded {
+    if (name.contains("ArtProfile", ignoreCase = true) || name.contains("BaselineProfile", ignoreCase = true)) {
+        enabled = false
+    }
 }
 
 tasks.register<Copy>("copyXrayLib") {
