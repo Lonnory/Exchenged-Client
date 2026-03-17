@@ -60,9 +60,6 @@ android {
     }
 
     packagingOptions.jniLibs.useLegacyPackaging = true
-    packagingOptions {
-        doNotStrip.add("**/*.so")
-    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
