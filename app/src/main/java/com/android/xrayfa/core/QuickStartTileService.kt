@@ -32,7 +32,7 @@ class QuickStartTileService
         }
     }
     override fun onClick() {
-        if (!XrayBaseService.isRunning) {
+        if (!XrayBaseService.statusFlow.value) {
             serviceScope.launch {
                 if (!xrayBaseServiceManager.startXrayBaseService(applicationContext)) {
                     Toast.makeText(applicationContext, R.string.config_not_ready,Toast.LENGTH_SHORT)

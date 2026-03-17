@@ -7,7 +7,6 @@ import android.util.Log
 import com.android.xrayfa.R
 import com.android.xrayfa.common.repository.SettingsRepository
 import com.android.xrayfa.helper.NotificationHelper
-import com.android.xrayfa.utils.EventBus
 import com.android.xrayfa.viewmodel.XrayViewmodel.Companion.EXTRA_LINK
 import com.android.xrayfa.viewmodel.XrayViewmodel.Companion.EXTRA_PROTOCOL
 import xrayfa.tun2socks.utils.NetPreferences
@@ -15,6 +14,8 @@ import xrayfa.tun2socks.Tun2SocksService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,7 +31,13 @@ class XrayBaseService
     companion object {
 
         const val TAG = "XrayBaseService"
-        var isRunning: Boolean = false
+
+        private val _statusFlow = MutableStateFlow(false)
+        val statusFlow = _statusFlow.asStateFlow()
+
+        fun updateStatus(isRunning: Boolean) {
+            _statusFlow.tryEmit(isRunning)
+        }
     }
 
     private val serviceJob = SupervisorJob()
@@ -45,16 +52,14 @@ class XrayBaseService
 
             Log.i(TAG, "onStartCommand: stop...")
             stopV2rayCoreService()
-            isRunning = false
-            EventBus.statusFlow.tryEmit(isRunning)
+            updateStatus(false)
             return  START_NOT_STICKY
         }else {
             Log.i(TAG, "onStartCommand: start...")
             val link = intent?.getStringExtra(EXTRA_LINK)
             val protocol = intent?.getStringExtra(EXTRA_PROTOCOL)
             startV2rayCoreService(link!!,protocol!!)
-            isRunning = true
-            EventBus.statusFlow.tryEmit(isRunning)
+            updateStatus(true)
             return START_STICKY
         }
     }

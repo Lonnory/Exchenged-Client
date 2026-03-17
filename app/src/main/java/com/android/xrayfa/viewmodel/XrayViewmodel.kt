@@ -26,7 +26,6 @@ import com.android.xrayfa.parser.SubscriptionParser
 import com.android.xrayfa.repository.NodeRepository
 import com.android.xrayfa.ui.DetailActivity
 import com.android.xrayfa.ui.SubscriptionActivity
-import com.android.xrayfa.utils.EventBus
 import com.google.zxing.BarcodeFormat
 import com.journeyapps.barcodescanner.BarcodeEncoder
 import kotlinx.coroutines.Dispatchers
@@ -79,7 +78,7 @@ class XrayViewmodel(
     private val _downSpeed = MutableStateFlow(0.0)
     val downSpeed: StateFlow<Double> = _downSpeed.asStateFlow()
 
-    private val _isServiceRunning = MutableStateFlow(XrayBaseService.isRunning)
+    private val _isServiceRunning = MutableStateFlow(XrayBaseService.statusFlow.value)
     val isServiceRunning: StateFlow<Boolean> = _isServiceRunning.asStateFlow()
 
     private val _qrcodeBitmap = MutableStateFlow<Bitmap?>(null)
@@ -108,7 +107,7 @@ class XrayViewmodel(
             _downSpeed.value = pair.second
         }
         viewModelScope.launch {
-            EventBus.statusFlow.collect {
+            XrayBaseService.statusFlow.collect {
                 _isServiceRunning.value = it
             }
         }
@@ -180,7 +179,7 @@ class XrayViewmodel(
 
 
     fun isServiceRunning(): Boolean {
-        return XrayBaseService.isRunning
+        return XrayBaseService.statusFlow.value
     }
     @Deprecated("single Activity")
     fun startDetailActivity(
