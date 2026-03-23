@@ -1,5 +1,6 @@
 package com.android.xrayfa.ui.component
 
+import android.content.Context
 import android.content.Intent
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -92,6 +93,9 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
@@ -115,6 +119,7 @@ import com.android.xrayfa.ui.navigation.Home
 import com.android.xrayfa.ui.navigation.NavigateDestination
 import com.android.xrayfa.ui.navigation.Subscription
 import com.android.xrayfa.viewmodel.XrayViewmodel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
@@ -271,13 +276,6 @@ fun ConfigScreen(
                                     },
                                     leadingIcon = {Icon(Icons.Outlined.DeleteForever, contentDescription = null)}
                                 )
-                                HorizontalDivider()
-                                DropdownMenuItem(
-                                    text = { Text("stay in beta") },
-                                    onClick = { /* Handle send feedback! */ },
-                                    leadingIcon = { Icon(Icons.Outlined.Email, contentDescription = null) },
-                                    trailingIcon = { Text("F11", textAlign = TextAlign.Center) },
-                                )
                             }
                         }
                     },
@@ -394,15 +392,26 @@ fun ConfigScreen(
         val searchBarState = rememberSearchBarState()
         val textFieldState = rememberTextFieldState()
         val scope = rememberCoroutineScope()
+        // Add FocusManager and KeyboardController
+        val focusManager = LocalFocusManager.current
+        val keyboardController = LocalSoftwareKeyboardController.current
+        var isInputEnabled by remember { mutableStateOf(true) }
         val inputField =
             @Composable {
                 SearchBarDefaults.InputField(
                     textFieldState = textFieldState,
                     searchBarState = searchBarState,
+                    enabled = isInputEnabled,
                     onSearch = {
+                        isInputEnabled = false
+                        focusManager.clearFocus(force = true)
+                        keyboardController?.hide()
                         scope.launch {
-                            xrayViewmodel.onSearch(it)
+                            // #269
+                            delay(400)
                             searchBarState.animateToCollapsed()
+                            xrayViewmodel.onSearch(it)
+                            isInputEnabled = true
                         }
 
                     },
@@ -436,6 +445,7 @@ fun ConfigScreen(
                 colors = SearchBarDefaults.colors(
                     containerColor = MaterialTheme.colorScheme.background
                 ),
+                shadowElevation = 1.dp,
                 modifier = Modifier.align(BiasAlignment(0f,0.7f))
                     .fillMaxWidth(0.8f)
             )
