@@ -59,6 +59,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.unit.dp
@@ -66,6 +68,7 @@ import androidx.navigation3.ui.LocalNavAnimatedContentScope
 import com.android.xrayfa.R
 import com.android.xrayfa.ui.navigation.Apps
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -108,17 +111,26 @@ fun AppsScreen(
                         }
 
                         val scope = rememberCoroutineScope()
+                        val focusManager = LocalFocusManager.current
+                        val keyboardController = LocalSoftwareKeyboardController.current
+                        var isInputEnabled by remember { mutableStateOf(true) }
                         val inputField =
                             @Composable {
                                 SearchBarDefaults.InputField(
                                     textFieldState = textFieldState,
                                     searchBarState = searchBarState,
+                                    enabled = isInputEnabled,
                                     onSearch = {
+                                        isInputEnabled = false
+                                        focusManager.clearFocus(force = true)
+                                        keyboardController?.hide()
                                         scope.launch {
+                                            delay(400)
                                             if (searchAppInfoCompleted) {
                                                 searchBarState.animateToCollapsed()
                                                 viewmodel.onSearch(it)
                                             }
+                                            isInputEnabled = true
                                         }
 
                                     },
