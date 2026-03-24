@@ -191,7 +191,12 @@ fun XrayFAContainer(
                                 navBackStack.routeTo(Config)
                             }
                         }
-                        is Edit -> NavEntry(key) { EditScreen() }
+                        is Edit -> NavEntry(key) { 
+                            EditScreen(
+                                detailViewmodel = detailViewmodel,
+                                onBack = { navBackStack.routeBack() }
+                            ) 
+                        }
                         is Detail -> NavEntry(
                             key = key,
                             metadata = XrayFASceneStrategy.detail()

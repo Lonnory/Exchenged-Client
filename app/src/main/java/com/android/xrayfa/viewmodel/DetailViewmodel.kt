@@ -3,6 +3,11 @@ package com.android.xrayfa.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.android.xrayfa.dto.Node
+import com.android.xrayfa.dto.VLESSConfig
+import com.android.xrayfa.dto.VMESSConfig
+import com.android.xrayfa.dto.ShadowSocksConfig
+import com.android.xrayfa.dto.TrojanConfig
 import com.android.xrayfa.model.AbsOutboundConfigurationObject
 import com.android.xrayfa.model.OutboundObject
 import com.android.xrayfa.model.protocol.Protocol
@@ -12,6 +17,7 @@ import com.android.xrayfa.parser.TrojanConfigParser
 import com.android.xrayfa.parser.VLESSConfigParser
 import com.android.xrayfa.parser.VMESSConfigParser
 import com.android.xrayfa.repository.NodeRepository
+import com.google.gson.JsonObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,34 +27,152 @@ class DetailViewmodel(
     val nodeRepository: NodeRepository,
 ): ViewModel() {
 
-
-
-
     private fun <T: AbsOutboundConfigurationObject> parseProtocol(
         protocol: String,
         content: String
     ): OutboundObject<T> {
         @Suppress("UNCHECKED_CAST")
-        return parserFactory.getParser(protocol).parseOutbound(content) as OutboundObject<T>
+        return  parserFactory.getParser(protocol).parseOutbound(content) as OutboundObject<T>
     }
 
-    fun parseVLESSProtocol(content: String): VLESSConfigParser.VLESSConfig {
-        return (parserFactory.getParser(Protocol.VLESS.protocolType) as VLESSConfigParser)
-            .decodeVLESS(content)
+    fun parseVLESSProtocol(content: String): VLESSConfig {
+        return VLESSConfigParser.decodeVLESS(content)
     }
 
-    fun parseVMESSProtocol(content: String): VMESSConfigParser.VMESSConfig {
-        return (parserFactory.getParser(Protocol.VMESS.protocolType) as VMESSConfigParser)
-            .decodeVMESS(content)
+    fun parseVMESSProtocol(content: String): VMESSConfig {
+        return VMESSConfigParser.decodeVMESS(content)
     }
 
-    fun parseTrojanProtocol(content:String): TrojanConfigParser.TrojanConfig {
-        return (parserFactory.getParser(Protocol.TROJAN.protocolType) as TrojanConfigParser)
-            .decodeTrojan(content)
+    fun parseTrojanProtocol(content:String): TrojanConfig {
+        return TrojanConfigParser.decodeTrojan(content)
     }
-    fun parseShadowSocks(content:String): ShadowSocksConfigParser.ShadowSocksConfig {
-        return (parserFactory.getParser(Protocol.SHADOW_SOCKS.protocolType) as ShadowSocksConfigParser)
-            .decodeShadowSocks(content)
+    fun parseShadowSocks(content:String): ShadowSocksConfig {
+        return ShadowSocksConfigParser.decodeShadowSocks(content)
+    }
+
+    fun saveNode(
+        protocol: Protocol,
+        remarks: String,
+        address: String,
+        port: Int,
+        id: String,
+        flow: String = "",
+        vlessEncryption: String = "none",
+        vmessSecurity: String = "auto",
+        ssMethod: String = "aes-256-gcm",
+        network: String = "tcp",
+        transportSecurity: String = "none",
+        wsPath: String = "/",
+        wsHost: String = "",
+        grpcServiceName: String = "",
+        sni: String = "",
+        fingerprint: String = "chrome",
+        publicKey: String = "",
+        shortId: String = ""
+    ) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val url = when (protocol) {
+                Protocol.VLESS -> {
+                    val params = mutableMapOf(
+                        "type" to network,
+                        "security" to transportSecurity,
+                        "encryption" to vlessEncryption,
+                        "flow" to flow
+                    )
+                    if (network == "ws") {
+                        params["path"] = wsPath
+                        params["host"] = wsHost
+                    } else if (network == "grpc") {
+                        params["serviceName"] = grpcServiceName
+                    }
+                    if (transportSecurity == "tls" || transportSecurity == "reality") {
+                        params["sni"] = sni
+                        params["fp"] = fingerprint
+                    }
+                    if (transportSecurity == "reality") {
+                        params["pbk"] = publicKey
+                        params["sid"] = shortId
+                    }
+                    
+                    VLESSConfigParser.encodeVLESS(VLESSConfig(
+                        remark = remarks,
+                        uuid = id,
+                        server = address,
+                        port = port,
+                        param = params
+                    ))
+                }
+                Protocol.VMESS -> {
+                    val others = JsonObject().apply {
+                        addProperty("v", "2")
+                        addProperty("ps", remarks)
+                        addProperty("add", address)
+                        addProperty("port", port)
+                        addProperty("id", id)
+                        addProperty("aid", "0")
+                        addProperty("scy", vmessSecurity)
+                        addProperty("net", network)
+                        addProperty("type", "none")
+                        addProperty("host", wsHost)
+                        addProperty("path", if (network == "ws") wsPath else if (network == "grpc") grpcServiceName else "")
+                        addProperty("tls", if (transportSecurity == "none") "" else transportSecurity)
+                        addProperty("sni", sni)
+                        addProperty("fp", fingerprint)
+                    }
+                    VMESSConfigParser.encodeVMESS(VMESSConfig(
+                        uuid = id,
+                        tls = if (transportSecurity == "none") "" else transportSecurity,
+                        host = wsHost,
+                        network = network,
+                        address = address,
+                        others = others
+                    ))
+                }
+                Protocol.SHADOW_SOCKS -> {
+                    ShadowSocksConfigParser.encodeShadowSocks(ShadowSocksConfig(
+                        method = ssMethod,
+                        password = id,
+                        server = address,
+                        port = port,
+                        tag = remarks
+                    ))
+                }
+                Protocol.TROJAN -> {
+                    val params = mutableMapOf(
+                        "type" to network,
+                        "security" to transportSecurity
+                    )
+                    if (network == "ws") {
+                        params["path"] = wsPath
+                        params["host"] = wsHost
+                    } else if (network == "grpc") {
+                        params["serviceName"] = grpcServiceName
+                    }
+                    if (transportSecurity == "tls" || transportSecurity == "reality") {
+                        params["sni"] = sni
+                    }
+                    TrojanConfigParser.encodeTrojan(TrojanConfig(
+                        scheme = "trojan",
+                        password = id,
+                        host = address,
+                        port = port,
+                        params = params,
+                        remark = remarks,
+                        original = ""
+                    ))
+                }
+            }
+            
+            val node = com.android.xrayfa.dto.Node(
+                protocolPrefix = protocol.protocolType,
+                address = address,
+                port = port,
+                remark = remarks,
+                subscriptionId = -1, // Manual added
+                url = url
+            )
+            nodeRepository.addNode(node)
+        }
     }
 
 }

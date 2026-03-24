@@ -6,6 +6,7 @@ import com.android.xrayfa.common.repository.SettingsRepository
 import com.android.xrayfa.dto.Link
 import com.android.xrayfa.model.MuxObject
 import com.android.xrayfa.dto.Node
+import com.android.xrayfa.dto.VLESSConfig
 import com.android.xrayfa.model.OutboundObject
 import com.android.xrayfa.model.ServerObject
 import com.android.xrayfa.model.UserObject
@@ -24,7 +25,6 @@ import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Singleton
 class VLESSConfigParser
 @Inject constructor(
@@ -33,85 +33,53 @@ class VLESSConfigParser
 
     companion object {
         const val TAG = "VLESSConfigParser"
-    }
 
-    data class VLESSConfig(
-        val protocol: Protocol = Protocol.VLESS,
-        val remark: String? = null,
-        val uuid: String,
-        val server: String,
-        val port: Int,
-        val param: Map<String,String>
-    )
-
-
-    /**
-     * decode vless protocol from share link
-     */
-    fun decodeVLESS(url: String): VLESSConfig {
-        val decode = URLDecoder.decode(url, "UTF-8")
-        val withoutProtocol = decode.removePrefix("vless://")
-
-        val (mainPart, remark) = withoutProtocol.split("#").let {
-            it[0] to if (it.size > 1) it[1] else ""
-        }
-
-        val (userAndServer, query) = mainPart.split("?").let {
-            it[0] to if (it.size > 1) it[1] else ""
-        }
-
-        val (uuid, serverAndPort) = userAndServer.split("@")
-        val (server, portStr) = serverAndPort.split(":")
-        val port = portStr.toIntOrNull() ?: 0
-
-        val queryParams = query.split("&").mapNotNull {
-            val kv = it.split("=")
-            if (kv.size == 2) kv[0] to kv[1] else null
-        }.toMap()
-
-
-
-        return VLESSConfig(
-            remark = remark,
-            uuid = uuid,
-            server = server,
-            port = port,
-            param = queryParams
-        )
-
-    }
-
-    /**
-     * encode vless protocol to share link
-     */
-    fun encodeVLESS(config: VLESSConfig):String {
-
-        val mainPart = "${config.uuid}@${config.server}:${config.port}"
-
-        val query = config.param.entries.joinToString("&") { "${it.key}=${it.value}" }
-
-        val remarkEncoded = config.remark?.let {
-            URLEncoder.encode(it, "UTF-8")
-        } ?: ""
-
-        return buildString {
-            append("vless://")
-            append(mainPart)
-            if (query.isNotEmpty()) {
-                append("?")
-                append(query)
+        fun decodeVLESS(url: String): VLESSConfig {
+            val decode = URLDecoder.decode(url, "UTF-8")
+            val withoutProtocol = decode.removePrefix("vless://")
+            val (mainPart, remark) = withoutProtocol.split("#").let {
+                it[0] to if (it.size > 1) it[1] else ""
             }
-            if (remarkEncoded.isNotEmpty()) {
-                append("#")
-                append(remarkEncoded)
+            val (userAndServer, query) = mainPart.split("?").let {
+                it[0] to if (it.size > 1) it[1] else ""
+            }
+            val (uuid, serverAndPort) = userAndServer.split("@")
+            val (server, portStr) = serverAndPort.split(":")
+            val port = portStr.toIntOrNull() ?: 0
+            val queryParams = query.split("&").mapNotNull {
+                val kv = it.split("=")
+                if (kv.size == 2) kv[0] to kv[1] else null
+            }.toMap()
+
+            return VLESSConfig(
+                remark = remark,
+                uuid = uuid,
+                server = server,
+                port = port,
+                param = queryParams
+            )
+        }
+
+        fun encodeVLESS(config: VLESSConfig):String {
+            val mainPart = "${config.uuid}@${config.server}:${config.port}"
+            val query = config.param.entries.joinToString("&") { "${it.key}=${it.value}" }
+            val remarkEncoded = config.remark?.let { URLEncoder.encode(it, "UTF-8") } ?: ""
+            return buildString {
+                append("vless://")
+                append(mainPart)
+                if (query.isNotEmpty()) {
+                    append("?")
+                    append(query)
+                }
+                if (remarkEncoded.isNotEmpty()) {
+                    append("#")
+                    append(remarkEncoded)
+                }
             }
         }
     }
-
 
     override fun parseOutbound(url: String): OutboundObject<VLESSOutboundConfigurationObject> {
-
-
         val parseVLESS = decodeVLESS(url)
         val queryParams = parseVLESS.param
         val network = queryParams["type"] ?: "raw"
@@ -138,16 +106,15 @@ class VLESSConfigParser
             streamSettings = StreamSettingsObject(
                 network = network,
                 security = security,
-                realitySettings =
-                    if (security == "reality") {
-                        RealitySettings(
-                            fingerprint = queryParams["fp"]?:"",
-                            publicKey = queryParams["pbk"]?:"",
-                            serverName = queryParams["sni"]?:"",
-                            spiderX = "",
-                            show = false,
-                        )
-                    } else null,
+                realitySettings = if (security == "reality") {
+                    RealitySettings(
+                        fingerprint = queryParams["fp"]?:"",
+                        publicKey = queryParams["pbk"]?:"",
+                        serverName = queryParams["sni"]?:"",
+                        spiderX = "",
+                        show = false,
+                    )
+                } else null,
                 rawSettings = if (network == "raw") { RawSettings() } else null,
                 wsSettings = if (network == "ws") {
                     WsSettings(
@@ -155,22 +122,15 @@ class VLESSConfigParser
                         headers = mapOf(Pair("host",queryParams["host"]?:""))
                     )
                 } else null,
-                grpcSettings = if (network == "grpc")GrpcSettings(
+                grpcSettings = if (network == "grpc") GrpcSettings(
                     serviceName = queryParams["serviceName"]?:"",
                     multiMode = false
                 ) else null,
                 tlsSettings = if (security == "tls") {
-                    TlsSettings(
-                        serverName = queryParams["host"]?:""
-                    )
+                    TlsSettings(serverName = queryParams["host"]?:"" )
                 } else null
             ),
-            mux = MuxObject(
-                concurrency = -1,
-                enable = false,
-                xudpConcurrency = 8,
-                xudpProxyUDP443 = ""
-            ),
+            mux = MuxObject(concurrency = -1, enable = false, xudpConcurrency = 8, xudpProxyUDP443 = ""),
             tag = "proxy"
         )
     }
@@ -194,6 +154,4 @@ class VLESSConfigParser
             } else ""
         )
     }
-
-
 }
