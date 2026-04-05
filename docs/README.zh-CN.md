@@ -12,15 +12,16 @@
 
 ## 📸  界面预览
 
-- 手机设备
+- 手机
 <p aligin="center">
-    <img src="config_xrayFA.jpg" width="30%" />
-    <img src="home_xrayFA.jpg" width="30%" />
-    <img src="settings_xrayFA.jpg" width="30%" />
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="30%" />
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="30%" />
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="30%" />
 </p>
-- 平板设备
+
+- 平板
 <p aligin="center">
-    <img src="tablet_scene_xrayFA.png" width="90%" />
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="90%" />
 </p>
 
 
