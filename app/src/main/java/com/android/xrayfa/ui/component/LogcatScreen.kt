@@ -44,7 +44,7 @@ fun LogcatScreen(
     val logList by viewmodel.logList.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(Unit) {
-        viewmodel.getLogcatContent()
+        viewmodel.getLogcatContent(context)
     }
     with(sharedTransitionScope) {
         Box(
