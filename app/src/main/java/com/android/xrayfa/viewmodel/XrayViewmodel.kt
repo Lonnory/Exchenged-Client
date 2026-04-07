@@ -361,7 +361,7 @@ class XrayViewmodel(
                 lst.add("-v")
                 lst.add("time")
                 lst.add("-s")
-                lst.add("GoLog,tun2socks,AndroidRuntime,System.err")
+                lst.add("GoLog,tun2socks,AndroidRuntime,System.err,Exception")
                 val process = Runtime.getRuntime().exec(lst.toTypedArray())
                 val log = process.inputStream.bufferedReader().readText().lines()
                 val error = process.errorStream.bufferedReader().readText()
@@ -370,7 +370,7 @@ class XrayViewmodel(
                 }
                 Log.i(TAG, "getLogcatContent: ${log.size} ${log[0]}")
                 _logList.value = log
-            }catch (e: Exception) {
+            } catch (e: Exception) {
                 Log.i(TAG, "getLogcatContent: ${e.message}")
             }
         }
