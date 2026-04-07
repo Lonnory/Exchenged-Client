@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,9 +21,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.BugReport
@@ -47,6 +46,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.SearchBarDefaults
+import androidx.compose.material3.SearchBarValue
 import androidx.compose.material3.SplitButtonDefaults
 import androidx.compose.material3.SplitButtonLayout
 import androidx.compose.material3.Surface
@@ -384,6 +384,7 @@ fun ConfigScreen(
         val focusManager = LocalFocusManager.current
         val keyboardController = LocalSoftwareKeyboardController.current
         var isInputEnabled by remember { mutableStateOf(true) }
+        val expended = searchBarState.targetValue == SearchBarValue.Expanded
         val inputField =
             @Composable {
                 SearchBarDefaults.InputField(
@@ -404,17 +405,24 @@ fun ConfigScreen(
 
                     },
                     placeholder = {
-                        Text(modifier = Modifier.clearAndSetSemantics {}, text = "Search")
+                        if (expended) {
+                            Text(modifier = Modifier.clearAndSetSemantics {}, text = "Search")
+                        }
+
                     },
                     leadingIcon = { Icon(
                         imageVector = Icons.Outlined.Search,
-                        contentDescription = "search_lab"
+                        contentDescription = "search_lab",
+                        tint = if (expended) MaterialTheme.colorScheme.onSurface
+                        else MaterialTheme.colorScheme.surface
                     ) },
                     trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Outlined.Mic,
-                            contentDescription = "voice_search_lab"
-                        )
+                        if (expended) {
+                            Icon(
+                                imageVector = Icons.Outlined.Mic,
+                                contentDescription = "voice_search_lab"
+                            )
+                        }
                     },
                 )
             }
@@ -424,21 +432,20 @@ fun ConfigScreen(
             },
             enter = fadeIn(),
             exit = fadeOut(),
-            modifier = Modifier.align (BiasAlignment(0f,0.9f))
+            modifier = Modifier.align (BiasAlignment(0.8f,0.9f))
                 .padding(bottom = bottomPadding)
         ) {
             SearchBar(
                 state = searchBarState,
                 inputField = inputField,
                 colors = SearchBarDefaults.colors(
-                    containerColor = MaterialTheme.colorScheme.background
+                    containerColor = MaterialTheme.colorScheme.primary
                 ),
                 shadowElevation = 1.dp,
-                modifier = Modifier.align(BiasAlignment(0f,0.7f))
-                    .fillMaxWidth(0.8f)
+                modifier = Modifier.size(56.dp),
+                shape = CircleShape
             )
         }
-
         ExpandedFullScreenSearchBar(
             state = searchBarState,
             inputField = inputField,
