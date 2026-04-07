@@ -1,5 +1,6 @@
 package com.android.xrayfa.viewmodel
 
+import android.app.ActivityManager
 import android.app.ActivityOptions
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -46,6 +47,7 @@ import javax.inject.Inject
 import kotlin.jvm.java
 import androidx.core.net.toUri
 import com.android.xrayfa.BuildConfig
+import kotlinx.coroutines.withContext
 
 class XrayViewmodel(
     private val repository: NodeRepository,
@@ -351,17 +353,32 @@ class XrayViewmodel(
     /**
      * Logcat
      */
-    fun getLogcatContent() {
+    fun getLogcatContent(context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-
                 val lst = LinkedHashSet<String>()
+                val packageName = "com.android.xrayfa"
+                val am = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                val runningProcesses = am.runningAppProcesses
+                var targetPid: Int? = null
+                if (runningProcesses != null) {
+                    for (processInfo in runningProcesses) {
+                        if (processInfo.processName == packageName) {
+                            targetPid = processInfo.pid
+                            break
+                        }
+                    }
+                }
                 lst.add("logcat")
                 lst.add("-d")
                 lst.add("-v")
                 lst.add("time")
+                if (targetPid != null) {
+                    lst.add("--pid")
+                    lst.add(targetPid.toString())
+                }
                 lst.add("-s")
-                lst.add("GoLog,tun2socks,AndroidRuntime,System.err")
+                lst.add("GoLog,tun2socks,AndroidRuntime,System.err,Exception")
                 val process = Runtime.getRuntime().exec(lst.toTypedArray())
                 val log = process.inputStream.bufferedReader().readText().lines()
                 val error = process.errorStream.bufferedReader().readText()
@@ -369,8 +386,10 @@ class XrayViewmodel(
                     Log.e(TAG, "Logcat error: $error")
                 }
                 Log.i(TAG, "getLogcatContent: ${log.size} ${log[0]}")
-                _logList.value = log
-            }catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    _logList.value = log
+                }
+            } catch (e: Exception) {
                 Log.i(TAG, "getLogcatContent: ${e.message}")
             }
         }
