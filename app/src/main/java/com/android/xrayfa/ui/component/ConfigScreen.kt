@@ -391,7 +391,7 @@ fun ConfigScreen(
                         Image(
                             bitmap = qrBitMap!!.asImageBitmap(),
                             contentDescription = "qrcode",
-                            modifier = Modifier.size(200.dp)
+                            modifier = Modifier.size(250.dp)
                         )
                         Spacer(modifier = Modifier.height(16.dp))
 
