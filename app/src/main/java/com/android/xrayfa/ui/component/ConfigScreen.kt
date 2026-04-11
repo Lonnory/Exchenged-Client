@@ -116,12 +116,15 @@ import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 
+import androidx.compose.animation.AnimatedVisibilityScope
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 fun ConfigScreen(
     xrayViewmodel: XrayViewmodel,
     bottomPadding: Dp = 0.dp,
     sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onNavigate: (NavigateDestination) -> Unit
 ) {
     val nodes by xrayViewmodel.nodes.collectAsState()

@@ -8,14 +8,13 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -23,7 +22,6 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -78,6 +76,11 @@ import com.android.xrayfa.viewmodel.SubscriptionViewmodel
 import kotlin.collections.listOf
 
 
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.runtime.LaunchedEffect
+import androidx.navigation3.ui.LocalNavAnimatedContentScope
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun XrayFAContainer(
@@ -91,13 +94,7 @@ fun XrayFAContainer(
     val context = LocalContext.current
     val density = LocalDensity.current
     var customNavBarHeightDp by remember { mutableStateOf(0.dp) }
-//    // migrate to navigation 3
-//    val navigationState = rememberNavigationState(
-//        startRoute = Home,
-//        topLevelRoutes = setOf(Home, Config, Logcat)
-//    )
-//    val navigator = remember { Navigator(navigationState) }
-//    val current = navigationState.topLevelRoute
+
     val navBackStack = rememberNavBackStack(
         Home
     )
@@ -105,6 +102,31 @@ fun XrayFAContainer(
     val top = navBackStack.lastOrNull()
     val showNavigationBar by xrayViewmodel.showNavigationBar.collectAsState()
     val isTopLevel = top in list_navigation
+
+    // 1. Pager State for Top Level Navigation
+    val pagerState = rememberPagerState(
+        initialPage = list_navigation.indexOf(Home).coerceAtLeast(0),
+        pageCount = { list_navigation.size }
+    )
+
+    // 2. Sync Pager -> NavBackStack (Only on settle to avoid fighting)
+    LaunchedEffect(pagerState.settledPage) {
+        val targetDestination = list_navigation[pagerState.settledPage]
+        if (top in list_navigation && top != targetDestination) {
+            navBackStack.routeTo(targetDestination)
+        }
+    }
+
+    // 3. Sync NavBackStack -> Pager (when clicking bottom nav)
+    LaunchedEffect(top) {
+        if (top in list_navigation) {
+            val targetPage = list_navigation.indexOf(top)
+            if (pagerState.currentPage != targetPage && targetPage != -1) {
+                pagerState.animateScrollToPage(targetPage)
+            }
+        }
+    }
+
     Box(
         modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars)
     ) {
@@ -116,44 +138,47 @@ fun XrayFAContainer(
                 sharedTransitionScope = this,
                 entryProvider = { key ->
                     when(key) {
-                        is Home -> NavEntry(
-                            key = key,
+                        in list_navigation -> NavEntry(
+                            // IMPORTANT: Use Home as a stable NavKey for ALL top-level screens.
+                            // This tells NavDisplay the entry is PERSISTENT, preventing
+                            // recreation and flicker when switching between Home and Config.
+                            key = Home,
                             metadata = metadata {
                                 put(NavDisplay.TransitionKey) {
-                                    slideInHorizontally{it} togetherWith slideOutHorizontally{-it}
-                                }
-                            }
-                        ){
-                            HomeScreen(
-                                xrayViewmodel = xrayViewmodel,
-                                bottomPadding = customNavBarHeightDp,
-                                sharedTransitionScope = this@SharedTransitionLayout
-                            ) { navBackStack.routeTo(Settings) }
-                        }
-
-                        is Config -> NavEntry(
-                            key = key,
-                            metadata = XrayFASceneStrategy.config() + metadata {
-                                put(NavDisplay.TransitionKey) {
-                                    slideInHorizontally(
-                                        initialOffsetX = { -it }
-                                    ) togetherWith slideOutHorizontally { it }
+                                    EnterTransition.None togetherWith ExitTransition.None
                                 }
                             }
                         ) {
-                            ConfigScreen(
-                                xrayViewmodel = xrayViewmodel,
-                                bottomPadding = customNavBarHeightDp,
-                                sharedTransitionScope = this@SharedTransitionLayout
-                            ) { navBackStack.routeTo(it) }
+                            val animatedVisibilityScope = LocalNavAnimatedContentScope.current
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.fillMaxSize(),
+                                userScrollEnabled = isTopLevel
+                            ) { page ->
+                                when (list_navigation[page]) {
+                                    is Home -> HomeScreen(
+                                        xrayViewmodel = xrayViewmodel,
+                                        bottomPadding = customNavBarHeightDp,
+                                        sharedTransitionScope = this@SharedTransitionLayout,
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    ) { navBackStack.routeTo(Settings) }
+
+                                    is Config -> ConfigScreen(
+                                        xrayViewmodel = xrayViewmodel,
+                                        bottomPadding = customNavBarHeightDp,
+                                        sharedTransitionScope = this@SharedTransitionLayout,
+                                        animatedVisibilityScope = animatedVisibilityScope
+                                    ) { navBackStack.routeTo(it) }
+                                }
+                            }
                         }
                         is Apps -> NavEntry(
                             key = key,
                             metadata = XrayFASceneStrategy.subscreen()
                         ) {
                             AppsScreen(
-                            viewmodel = appViewmodel,
-                            sharedTransitionScope = this@SharedTransitionLayout
+                                viewmodel = appViewmodel,
+                                sharedTransitionScope = this@SharedTransitionLayout
                             )
                         }
 
@@ -209,7 +234,6 @@ fun XrayFAContainer(
                     }
                 },
                 predictivePopTransitionSpec = { _ ->
-                    //todo Link Predictive Back Animation with Standard Back Animation #222
                     EnterTransition.None togetherWith ExitTransition.None
                 }
             )
@@ -232,9 +256,17 @@ fun XrayFAContainer(
                     customNavBarHeightDp = with(density) { heightPx.toDp() }
                 }
         ) {
+            // Calculate current destination in real-time
+            // If we are at top level, trust the Pager's current page for the highlight
+            val currentDestination = if (isTopLevel) {
+                list_navigation[pagerState.currentPage]
+            } else {
+                top as NavigateDestination
+            }
+
             XrayModernFloatingNav(
                 items = list_navigation,
-                currentScreen = navBackStack.last() as NavigateDestination,
+                currentScreen = currentDestination,
                 onItemSelected = { item ->
                     navBackStack.routeTo(item)
                 },

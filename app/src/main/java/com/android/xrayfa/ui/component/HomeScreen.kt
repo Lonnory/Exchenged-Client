@@ -73,12 +73,15 @@ import com.android.xrayfa.viewmodel.XrayViewmodel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+import androidx.compose.animation.AnimatedVisibilityScope
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     xrayViewmodel: XrayViewmodel,
     bottomPadding: Dp = 0.dp,
     sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope,
     onSettingsClick: () -> Unit = {}
 ) {
     val windowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
@@ -100,7 +103,7 @@ fun HomeScreen(
                                 contentDescription = "Settings",
                                 modifier = Modifier.sharedElement(
                                     sharedTransitionScope.rememberSharedContentState(key = Settings.route),
-                                    animatedVisibilityScope = LocalNavAnimatedContentScope.current,
+                                    animatedVisibilityScope = animatedVisibilityScope,
                                 )
                             )
                         }
