@@ -40,7 +40,8 @@ jobs:
     - name: Install gomobile
       run: |
         go install golang.org/x/mobile/cmd/gomobile@latest
-        export PATH=$PATH:~/go/bin
+        echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
+
     - name: Setup EXACT NDK for Reproducibility
       run: |
         wget -qO android-ndk.zip https://dl.google.com/android/repository/android-ndk-r27-linux.zip
@@ -48,6 +49,27 @@ jobs:
         rm android-ndk.zip
           
         echo "ANDROID_NDK_HOME=$(pwd)/android-ndk-r27" >> $GITHUB_ENV
+
+    - name: Prepare AAR
+      env:
+        ANDROID_NDK_HOME: ${{ env.ANDROID_NDK_HOME }}
+        GOFLAGS: -buildvcs=false
+        CGO_LDFLAGS: -Wl,--build-id=none
+      run: |
+        # Build AAR for xray
+        cd AndroidLibXrayLite
+        gomobile init
+        go mod tidy -v
+        
+        CURRENT_PATH=$(pwd)
+        export CGO_CFLAGS="-ffile-prefix-map=$CURRENT_PATH=."
+        export CGO_CXXFLAGS="-ffile-prefix-map=$CURRENT_PATH=."
+        
+        # gomobile bind default name is libv2ray.aar for package libv2ray
+        gomobile bind -v -trimpath -androidapi 21 -ldflags="-s -w -buildid=" ./
+        
+        mkdir -p ../app/libs
+        cp libv2ray.aar ../app/libs/
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
