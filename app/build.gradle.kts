@@ -152,7 +152,8 @@ tasks.register<Copy>("copyXrayLib") {
 }
 
 tasks.named("preBuild") {
-    dependsOn("copyXrayLib")
+    // personal compile can use it,but at server use script
+    //dependsOn("copyXrayLib")
 }
 
 
