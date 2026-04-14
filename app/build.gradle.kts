@@ -100,9 +100,7 @@ android {
 
                 val baseAbiCode = abiCodes[name] ?: 0
 
-                if(baseAbiCode != null) {
-                    output.versionCode.set((baseAbiCode * 1000 + output.versionCode.get()))
-                }
+                output.versionCode.set((baseAbiCode + 1000 * output.versionCode.get()))
             }
         }
     }
