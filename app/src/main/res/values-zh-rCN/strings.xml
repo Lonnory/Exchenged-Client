@@ -1,6 +1,6 @@
 <resources>
-    <string name="start_vpn">开启VPN</string>
-    <string name="stop_vpn">停止VPN</string>
+    <string name="start">开启</string>
+    <string name="stop">停止</string>
     <string name="disconnect">已断开</string>
     <string name="connected">已连接</string>
     <string name="home">主页</string>
