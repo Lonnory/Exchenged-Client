@@ -6,6 +6,12 @@ import android.net.VpnService
 import android.os.ParcelFileDescriptor
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
+import com.android.xrayfa.MainActivity
+import com.android.xrayfa.MainActivity.Companion.ACTION_START_SERVICE
+import com.android.xrayfa.MainActivity.Companion.ACTION_STOP_SERVICE
 import com.android.xrayfa.R
 import com.android.xrayfa.common.repository.SettingsRepository
 import com.android.xrayfa.helper.NotificationHelper
@@ -45,6 +51,7 @@ class XrayBaseService
         private val _statusFlow = MutableStateFlow(false)
         val statusFlow = _statusFlow.asStateFlow()
 
+
         fun updateStatus(isRunning: Boolean) {
             _statusFlow.tryEmit(isRunning)
         }
@@ -65,6 +72,7 @@ class XrayBaseService
                 serviceScope.launch {
                     stopXrayCoreService()
                     updateStatus(false)
+                    updateToggleShortcut(false)
                     stopSelf()
                     notificationHelper.hideNotification()
                 }
@@ -82,6 +90,7 @@ class XrayBaseService
                     }
                     startXrayCoreService(link!!,protocol!!)
                     updateStatus(true)
+                    updateToggleShortcut(true)
                 }
                 START_STICKY
             }
@@ -172,6 +181,28 @@ class XrayBaseService
         if (tun2SocksService.isRunning()) tun2SocksService.stopTun2Socks()
         stopVPN()
         xrayCoreManager.stopXrayCore()
+    }
+
+    // Call this method whenever VPN state changes
+    fun updateToggleShortcut(isRunning: Boolean) {
+        // Define the intent that the shortcut will fire
+        val intent = Intent(this, MainActivity::class.java).apply {
+            action = "com.android.xrayfa.ACTION_TOGGLE_PROXY"
+            putExtra("shortcut_action",if (isRunning) ACTION_STOP_SERVICE else ACTION_START_SERVICE)
+        }
+
+        // Configure shortcut label and icon based on state
+        val label = if (isRunning) getString(R.string.stop) else getString(R.string.start)
+        val iconRes = if (isRunning) R.drawable.ic_turn_on else R.drawable.ic_turn_off
+
+        val shortcut = ShortcutInfoCompat.Builder(this, "shortcut_toggle")
+            .setShortLabel(label)
+            .setIcon(IconCompat.createWithResource(this, iconRes))
+            .setIntent(intent)
+            .build()
+
+        // Update the shortcut on the launcher
+        ShortcutManagerCompat.pushDynamicShortcut(this, shortcut)
     }
 
 }

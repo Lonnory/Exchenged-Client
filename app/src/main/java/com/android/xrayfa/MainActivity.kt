@@ -36,12 +36,19 @@ class MainActivity @Inject constructor(
     val appViewmodelFactory: AppsViewmodelFactory
 ) : XrayBaseActivity() {
 
-    lateinit var xrayViewmodel: XrayViewmodel
+    private lateinit var xrayViewmodel: XrayViewmodel
+
+    private val barcodeLauncher = registerForActivityResult(ScanQRResultContract()) { result ->
+        if (result.isEmpty()) {
+            Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
+        } else {
+            xrayViewmodel.addLink(result)
+        }
+    }
     @SuppressLint("SourceLockedOrientationActivity")
     @Composable
     override fun Content(isLandscape: Boolean) {
-        xrayViewmodel =
-            ViewModelProvider(this, xrayViewmodelFactory)[XrayViewmodel::class.java]
+
         val detailViewmodel =
             ViewModelProvider.create(this,detailViewmodelFactory)[DetailViewmodel::class.java]
         val settingsViewmodel = ViewModelProvider
@@ -63,11 +70,17 @@ class MainActivity @Inject constructor(
 
     companion object {
         const val TAG = "MainActivity"
+        const val ACTION_OPEN_SCAN = "open_scan"
+        const val ACTION_START_SERVICE = "start_service"
+        const val ACTION_STOP_SERVICE = "stop_service"
     }
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
+        xrayViewmodel =
+            ViewModelProvider(this, xrayViewmodelFactory)[XrayViewmodel::class.java]
         handleShortcutIntent(intent)
     }
 
@@ -118,17 +131,23 @@ class MainActivity @Inject constructor(
     private fun handleShortcutIntent(intent: Intent) {
         // Retrieve the extra defined in shortcuts.xml
         val action = intent.getStringExtra("shortcut_action")
-        Log.d(TAG, "handleShortcutIntent: start QR scan")
-        if (action == "open_scan") {
-            val barcodeLauncher = registerForActivityResult(ScanQRResultContract()) { result ->
-                if (result.isEmpty()) {
-                    Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
-                } else {
-                    xrayViewmodel.addLink(result)
+        when(action) {
+            ACTION_OPEN_SCAN -> {
+                val intent = Intent(this, QRCodeActivity::class.java)
+                barcodeLauncher.launch(intent)
+            }
+            ACTION_START_SERVICE -> {
+                if (!xrayViewmodel.isServiceRunning()) {
+                    xrayViewmodel.startXrayService(this)
+                    finish()
                 }
             }
-            val intent = Intent(this, QRCodeActivity::class.java)
-            barcodeLauncher.launch(intent)
+            ACTION_STOP_SERVICE -> {
+                if (xrayViewmodel.isServiceRunning()) {
+                    xrayViewmodel.stopXrayService(this)
+                    finish()
+                }
+            }
         }
     }
 
