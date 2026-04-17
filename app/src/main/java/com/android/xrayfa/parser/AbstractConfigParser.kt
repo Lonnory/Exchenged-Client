@@ -43,7 +43,7 @@ abstract class AbstractConfigParser<T: AbsOutboundConfigurationObject,P> {
     suspend fun getBaseInboundConfig(): InboundObject {
         val settingsState = settingsRepo.settingsFlow.first()
         return InboundObject(
-            listen = "127.0.0.1",
+            listen = settingsState.socksListen,
             port = settingsState.socksPort,
             protocol = "socks",
             settings = SocksInboundConfigurationObject(

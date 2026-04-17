@@ -282,7 +282,21 @@ fun SettingsScreen(
                 SettingsGroup(
                     groupName = stringResource(R.string.network_part)
                 ) {
-
+                    SettingsSelectBox(
+                        title = R.string.socks_address_listen_title,
+                        description = R.string.socks_address_listen_desc,
+                        onSelected = { mode ->
+                            when(mode) {
+                                0 -> viewmodel.setSocksListen("127.0.0.1")
+                                1 -> viewmodel.setSocksListen("0.0.0.0")
+                            }
+                        },
+                        selected = settingsState.socksListen,
+                        options = mapOf(
+                            0 to "127.0.0.1",
+                            1 to "0.0.0.0"
+                        )
+                    )
                     SettingsFieldBox(
                         title = R.string.socks_port,
                         content = settingsState.socksPort.toString()

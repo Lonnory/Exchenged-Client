@@ -105,5 +105,6 @@
     <string name="err_socks_user_empty">username should not be empty!</string>
     <string name="err_socks_length_exceeded">length should not over than 255byte</string>
     <string name="err_socks_invalid_chars">contains invalid chars</string>
-
+    <string name="socks_address_listen_title">listen</string>
+    <string name="socks_address_listen_desc">listen address(127.0.0.1 default)</string>
 </resources>

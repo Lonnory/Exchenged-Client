@@ -26,6 +26,7 @@ data class SettingsState(
     val socksPort: Int = 10808,
     val socksUserName: String = "",
     val socksPassword: String = "",
+    val socksListen: String = "",
     val dnsIPv4: String = "",
     val dnsIPv6: String = "",
     val delayTestUrl: String = DEFAULT_DELAY_TEST_URL,
@@ -43,6 +44,7 @@ object SettingsKeys {
     val SOCKS_PORT = intPreferencesKey("socks_port")
     val SOCKS_USERNAME = stringPreferencesKey("socks_username")
     val SOCKS_PASSWORD = stringPreferencesKey("socks_password")
+    val SOCKS_LISTEN = stringPreferencesKey("socks_listen")
     val DNS_IPV4 = stringPreferencesKey("dns_ipv4")
     val DNS_IPV6 = stringPreferencesKey("dns_ipv6")
     val VERSION = stringPreferencesKey("version")
@@ -89,6 +91,7 @@ class SettingsRepository
             socksPort = prefs[SettingsKeys.SOCKS_PORT] ?: 10808,
             socksUserName = prefs[SettingsKeys.SOCKS_USERNAME]?:"",
             socksPassword = prefs[SettingsKeys.SOCKS_PASSWORD]?:"",
+            socksListen = prefs[SettingsKeys.SOCKS_LISTEN]?:"127.0.0.1",
             dnsIPv4 = prefs[SettingsKeys.DNS_IPV4] ?: "8.8.8.8,1.1.1.1",
             dnsIPv6 = prefs[SettingsKeys.DNS_IPV6] ?: "2001:4860:4860::8888",
             delayTestUrl = prefs[SettingsKeys.DELAY_TEST_URL] ?: DEFAULT_DELAY_TEST_URL,
@@ -194,6 +197,12 @@ class SettingsRepository
     suspend fun setSocksPassword(password: String) {
         context.dataStore.edit {
             it[SettingsKeys.SOCKS_PASSWORD] = password
+        }
+    }
+
+    suspend fun setSocksListen(address: String) {
+        context.dataStore.edit {
+            it[SettingsKeys.SOCKS_LISTEN] = address
         }
     }
 

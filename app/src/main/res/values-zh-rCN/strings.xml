@@ -95,4 +95,6 @@
     <string name="err_socks_user_empty">账号不应该为空</string>
     <string name="err_socks_length_exceeded">长度不该超过255字节</string>
     <string name="err_socks_invalid_chars">包含特殊非法字符</string>
+    <string name="socks_address_listen_title">监听地址</string>
+    <string name="socks_address_listen_desc">默认本地回环地址127.0.0.1</string>
 </resources>

@@ -185,6 +185,13 @@ class SettingsViewmodel(
         }
     }
 
+    fun setSocksListen(address: String) {
+        viewModelScope.launch {
+            repository.setSocksListen(address)
+            onConfigSettingsChanged()
+        }
+    }
+
     suspend fun onConfigSettingsChanged() {
         xrayBaseServiceManager.restartXrayBaseServiceIfNeed()
     }
