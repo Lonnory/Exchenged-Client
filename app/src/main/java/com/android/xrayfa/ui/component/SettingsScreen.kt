@@ -6,7 +6,6 @@ import android.content.Intent
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
-import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
@@ -14,18 +13,14 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -36,13 +31,31 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.outlined.Apps
+import androidx.compose.material.icons.outlined.BugReport
+import androidx.compose.material.icons.outlined.DataUsage
+import androidx.compose.material.icons.outlined.Dns
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.NetworkCheck
+import androidx.compose.material.icons.outlined.NotificationsActive
+import androidx.compose.material.icons.outlined.Numbers
+import androidx.compose.material.icons.outlined.Palette
+import androidx.compose.material.icons.outlined.Password
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material.icons.outlined.PowerSettingsNew
+import androidx.compose.material.icons.outlined.Public
+import androidx.compose.material.icons.outlined.Router
+import androidx.compose.material.icons.outlined.Security
+import androidx.compose.material.icons.outlined.Speed
+import androidx.compose.material.icons.outlined.VisibilityOff
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -57,7 +70,6 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.android.xrayfa.R
 import com.android.xrayfa.viewmodel.SettingsViewmodel
 import androidx.compose.runtime.getValue
@@ -72,7 +84,6 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.datastore.preferences.core.Preferences
@@ -153,16 +164,17 @@ fun SettingsScreen(
                 },
                 navigationIcon = {
                     with(sharedTransitionScope) {
-                        Icon(
-                            imageVector = Icons.Default.Settings,
-                            contentDescription = "settings",
-                            modifier = Modifier.sharedElement(
-                                sharedTransitionScope.rememberSharedContentState(key = Settings.route),
-                                animatedVisibilityScope = LocalNavAnimatedContentScope.current,
+                        IconButton(onClick = {}) {
+                            Icon(
+                                imageVector = Icons.Default.Settings,
+                                contentDescription = "settings",
+                                modifier = Modifier.sharedElement(
+                                    sharedTransitionScope.rememberSharedContentState(key = Settings.route),
+                                    animatedVisibilityScope = LocalNavAnimatedContentScope.current,
                                 )
-                        )
+                            )
+                        }
                     }
-
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = currentTopbarColor,
@@ -170,25 +182,21 @@ fun SettingsScreen(
                 ),
                 modifier = Modifier.shadow(appBarElevation)
             )
-        },
-        modifier = Modifier.clip(RoundedCornerShape(12.dp))
+        }
     ) { innerPadding ->
-
-        Box(
-            modifier = Modifier.fillMaxSize()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.background)
+                .verticalScroll(scrollState)
         ) {
-            Column(
-                modifier = Modifier.fillMaxWidth()
-                    .verticalScroll(scrollState)
-            ) {
                 SettingsGroup(
                     groupName = stringResource(R.string.general_part)
                 ) {
                     SettingsSelectBox(
                         title = R.string.theme_select,
                         description = R.string.dark_mode_description,
+                        icon = Icons.Outlined.Palette,
                         onSelected = { mode ->
                             viewmodel.setDarkMode(mode)
                         },
@@ -204,14 +212,11 @@ fun SettingsScreen(
                             2 to stringResource(R.string.auto_mode)
                         )
                     )
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
                     with(sharedTransitionScope) {
                         SettingsFieldBox(
                             title = R.string.allow_app_settings,
                             content = stringResource(R.string.select_app_settings),
+                            icon = Icons.Outlined.Apps,
                             modifier = Modifier.sharedElement(
                                 sharedTransitionScope.rememberSharedContentState(key = Apps.route),
                                 animatedVisibilityScope = LocalNavAnimatedContentScope.current,
@@ -222,14 +227,11 @@ fun SettingsScreen(
                         }
                     }
 
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
                     with(sharedTransitionScope) {
                         SettingsFieldBox(
                             title = R.string.logcat,
                             content = stringResource(R.string.logcat_desc),
+                            icon = Icons.Outlined.BugReport,
                             modifier = Modifier.sharedElement(
                                 sharedTransitionScope.rememberSharedContentState(key = Logcat.route),
                                 animatedVisibilityScope = LocalNavAnimatedContentScope.current
@@ -239,38 +241,29 @@ fun SettingsScreen(
                         }
                     }
 
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
                     SettingsCheckBox(
                         title = R.string.boot_auto_start,
                         description = R.string.boot_auto_start_desc,
+                        icon = Icons.Outlined.PowerSettingsNew,
                         checked = settingsState.bootAutoStart,
                         onCheckedChange = { checked ->
                             viewmodel.setEnableBootAutoStart(checked)
                         }
                     )
-                    HorizontalDivider(
-                        thickness = 1.dp,
-                        modifier = Modifier.padding(horizontal = 24.dp)
-                    )
                     SettingsCheckBox(
                         title = R.string.hide_from_recents_title,
                         description = R.string.hide_from_recents_desc,
+                        icon = Icons.Outlined.VisibilityOff,
                         checked = settingsState.hideFromRecents,
                         onCheckedChange = { checked ->
                             viewmodel.setHideFromRecents(checked)
                         }
                     )
                     if (NotificationHelper.canPostPromotionsEnabled(LocalContext.current)) {
-                        HorizontalDivider(
-                            thickness = 1.dp,
-                            modifier = Modifier.padding(horizontal = 24.dp)
-                        )
                         SettingsCheckBox(
                             title = R.string.live_update_notification,
                             description = R.string.live_update_notification_desc,
+                            icon = Icons.Outlined.NotificationsActive,
                             checked = settingsState.liveUpdateNotification,
                             onCheckedChange = { checked->
                                 viewmodel.setLiveUpdateNotification(checked)
@@ -285,6 +278,7 @@ fun SettingsScreen(
                     SettingsSelectBox(
                         title = R.string.socks_address_listen_title,
                         description = R.string.socks_address_listen_desc,
+                        icon = Icons.Outlined.Router,
                         onSelected = { mode ->
                             when(mode) {
                                 0 -> viewmodel.setSocksListen("127.0.0.1")
@@ -299,7 +293,8 @@ fun SettingsScreen(
                     )
                     SettingsFieldBox(
                         title = R.string.socks_port,
-                        content = settingsState.socksPort.toString()
+                        content = settingsState.socksPort.toString(),
+                        icon = Icons.Outlined.Numbers
                     ) {
                         editInitValue = settingsState.socksPort.toString()
                         isShowEditDialog = true
@@ -310,7 +305,8 @@ fun SettingsScreen(
                     }
                     SettingsFieldBox(
                         title = R.string.socks_username_title,
-                        content = settingsState.socksUserName
+                        content = settingsState.socksUserName,
+                        icon = Icons.Outlined.Person
                     ) {
                         editInitValue = settingsState.socksUserName
                         isShowEditDialog = true
@@ -319,7 +315,8 @@ fun SettingsScreen(
                     }
                     SettingsFieldBox(
                         title = R.string.socks_password_title,
-                        content = settingsState.socksPassword
+                        content = settingsState.socksPassword,
+                        icon = Icons.Outlined.Password
                     ) {
                         editInitValue = settingsState.socksPassword
                         isShowEditDialog = true
@@ -329,7 +326,8 @@ fun SettingsScreen(
 
                     SettingsFieldBox(
                         title = R.string.dns_ipv4,
-                        content = settingsState.dnsIPv4
+                        content = settingsState.dnsIPv4,
+                        icon = Icons.Outlined.Dns
                     ) {
                         editInitValue = settingsState.dnsIPv4
                         isShowEditDialog = true
@@ -339,6 +337,7 @@ fun SettingsScreen(
                     SettingsCheckBox(
                         title = R.string.enable_ipv6,
                         description = R.string.enable_ipv6_description,
+                        icon = Icons.Outlined.NetworkCheck,
                         checked = settingsState.ipV6Enable,
                         onCheckedChange = { checked->
                             viewmodel.setIpV6Enable(checked)
@@ -347,6 +346,7 @@ fun SettingsScreen(
                     SettingsFieldBox(
                         title = R.string.dns_ipv6,
                         content = settingsState.dnsIPv6,
+                        icon = Icons.Outlined.Dns,
                         enable = settingsState.ipV6Enable,
                         onClick = {
                             if (settingsState.ipV6Enable) {
@@ -360,6 +360,7 @@ fun SettingsScreen(
                     SettingsWithBtnBox(
                         title = R.string.geo_ip,
                         description = R.string.geo_ip_description,
+                        icon = Icons.Outlined.Language,
                         downloading = geoIPDownloading,
                         onDownloadClick = {viewmodel.downloadGeoIP(context = context)},
                         onImportClick = {
@@ -375,6 +376,7 @@ fun SettingsScreen(
                     SettingsWithBtnBox(
                         title = R.string.geo_site,
                         description = R.string.geo_site_description,
+                        icon = Icons.Outlined.Public,
                         onDownloadClick = {viewmodel.downloadGeoSite(context)},
                         downloading = geoSiteDownloading,
                         onImportClick = {
@@ -390,6 +392,7 @@ fun SettingsScreen(
                     SettingsWithBtnBox(
                         title = R.string.geo_lite_title,
                         description = R.string.geo_ip_lite_description,
+                        icon = Icons.Outlined.DataUsage,
                         onDownloadClick = {viewmodel.downloadGeoLite(context)},
                         downloading = geoLiteDownloading,
                         enable = settingsState.geoLiteInstall
@@ -397,6 +400,7 @@ fun SettingsScreen(
                     SettingsCheckBox(
                         title = R.string.enable_hextun_title,
                         description = R.string.enable_hex_tun_desc,
+                        icon = Icons.Outlined.Security,
                         checked = settingsState.hexTunEnable,
                         onCheckedChange = {
                             viewmodel.setHexTunEnable(it)
@@ -404,7 +408,8 @@ fun SettingsScreen(
                     )
                     SettingsFieldBox(
                         title = R.string.test_url,
-                        content = settingsState.delayTestUrl
+                        content = settingsState.delayTestUrl,
+                        icon = Icons.Outlined.Speed
                     ) {
                         //todo: domain validator
                         editInitValue = settingsState.delayTestUrl
@@ -422,6 +427,7 @@ fun SettingsScreen(
                     SettingsWithBtnBox(
                         title = R.string.xrayfa_version,
                         content = versionName,
+                        icon = Icons.Outlined.Info,
                         downloading = xrayFaDownloading,
                         onDownloadClick = {
                         }
@@ -429,7 +435,8 @@ fun SettingsScreen(
 
                     SettingsFieldBox(
                         title = R.string.xray_core_version,
-                        content = settingsState.xrayCoreVersion
+                        content = settingsState.xrayCoreVersion,
+                        icon = Icons.Outlined.Info
                     ) {
                     }
                     SettingsFieldBox(
@@ -483,48 +490,37 @@ fun SettingsScreen(
                 else
                     stringResource(R.string.download_geo_failed)
             )
-        }
     }
-
 }
 
 @Composable
 fun SettingsCheckBox(
     @StringRes title: Int,
     @StringRes description: Int,
+    icon: ImageVector? = null,
     checked: Boolean = false,
     onCheckedChange: (Boolean) -> Unit = {}
 ) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {},
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(0.8f)
-                .padding(horizontal = 8.dp, vertical = 8.dp)
-        ) {
-            Text(
-                text = stringResource(title),
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = stringResource(description),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-        Box(
-            modifier = Modifier.weight(0.2f)
-        ) {
+    ListItem(
+        headlineContent = { Text(stringResource(title)) },
+        supportingContent = { Text(stringResource(description)) },
+        leadingContent = icon?.let { { 
+            Icon(
+                imageVector = it, 
+                contentDescription = null, 
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            ) 
+        } },
+        trailingContent = {
             Switch(
                 checked = checked,
-                onCheckedChange = onCheckedChange,
-                modifier = Modifier.align(Alignment.Center)
+                onCheckedChange = onCheckedChange
             )
-        }
-    }
+        },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+        modifier = Modifier.clickable { onCheckedChange(!checked) }
+    )
 }
 
 
@@ -533,6 +529,7 @@ fun SettingsWithBtnBox(
     @StringRes title: Int,
     @StringRes description: Int? = null,
     content: String = "",
+    icon: ImageVector? = null,
     downloading: Boolean = false,
     onDownloadClick: () -> Unit = {},
     onImportClick: (() -> Unit)? = null,
@@ -548,59 +545,60 @@ fun SettingsWithBtnBox(
         )
     )
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {}, //todo optional: download url
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(0.7f)
-                .padding(horizontal = 8.dp, vertical = 8.dp)
-        ) {
+    ListItem(
+        headlineContent = {
             Text(
                 text = stringResource(title),
-                style = MaterialTheme.typography.titleMedium,
-                color = if (enable) MaterialTheme.colorScheme.onBackground else Color.Gray
+                color = if (enable) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
             )
+        },
+        supportingContent = {
             Text(
                 text = if (description != null)stringResource(description) else content,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (enable) MaterialTheme.colorScheme.onBackground else Color.Gray
+                color = if (enable) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
             )
-        }
-        Row(
-            modifier = Modifier.weight(0.3f),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            IconButton(
-                onClick = onDownloadClick
-            ) {
-                Icon(
-                    imageVector = if (!downloading)
-                        ImageVector.vectorResource(R.drawable.ic_download)
-                    else
-                        Icons.Default.Refresh,
-                    contentDescription = "download",
-                    modifier = Modifier
-                        .size(24.dp)
-                        .rotate(angle)
-                )
-            }
-            if (onImportClick != null) {
+        },
+        leadingContent = icon?.let { {
+            Icon(
+                imageVector = it,
+                contentDescription = null,
+                tint = if (enable) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
+                modifier = Modifier.size(24.dp)
+            )
+        } },
+        trailingContent = {
+            Row {
                 IconButton(
-                    onClick = onImportClick
+                    onClick = onDownloadClick,
+                    enabled = enable
                 ) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.ic_import),
-                        contentDescription = "import",
-                        modifier = Modifier.size(24.dp)
+                        imageVector = if (!downloading)
+                            ImageVector.vectorResource(R.drawable.ic_download)
+                        else
+                            Icons.Default.Refresh,
+                        contentDescription = "download",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .rotate(angle)
                     )
                 }
+                if (onImportClick != null) {
+                    IconButton(
+                        onClick = onImportClick,
+                        enabled = enable
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.ic_import),
+                            contentDescription = "import",
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
             }
-        }
-    }
+        },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -608,90 +606,76 @@ fun SettingsWithBtnBox(
 fun SettingsSelectBox(
     @StringRes title: Int,
     @StringRes description: Int,
+    icon: ImageVector? = null,
     onSelected: (Int) -> Unit = {},
     selected: String = "dark",
     options: Map<Int,String> = mapOf()
 ) {
     var expand by remember { mutableStateOf(false) }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {},
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(0.7f)
-                .padding(horizontal = 8.dp, vertical = 8.dp)
-        ) {
-            Text(
-                text = stringResource(title),
-                style = MaterialTheme.typography.titleMedium,
-            )
-            Text(
-                text = stringResource(description),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-        Row(
-            modifier = Modifier
-                .weight(0.3f)
-                .padding(end = 8.dp)
-        ) {
-
-            TextButton(
-                onClick = {
-                    expand = !expand
-                },
-                modifier = Modifier
-                    .clip(RoundedCornerShape(32.dp))
-                    .weight(0.3f)
-                    .padding(end = 8.dp)
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically,
+    ListItem(
+        headlineContent = { Text(stringResource(title)) },
+        supportingContent = { Text(stringResource(description)) },
+        leadingContent = icon?.let { { 
+            Icon(
+                imageVector = it, 
+                contentDescription = null, 
+                tint = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.size(24.dp)
+            ) 
+        } },
+        trailingContent = {
+            Box {
+                TextButton(
+                    onClick = {
+                        expand = !expand
+                    },
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(32.dp))
                 ) {
-                    Text(
-                        text = selected,
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onBackground,
-                        maxLines = 1
-                    )
-                    Icon(
-                        imageVector = if (expand)
-                            Icons.Default.KeyboardArrowUp
-                        else
-                            Icons.Default.KeyboardArrowDown,
-                        contentDescription = "dark mode"
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = selected,
+                            style = MaterialTheme.typography.labelLarge,
+                            color = MaterialTheme.colorScheme.primary,
+                            maxLines = 1
+                        )
+                        Icon(
+                            imageVector = if (expand)
+                                Icons.Default.KeyboardArrowUp
+                            else
+                                Icons.Default.KeyboardArrowDown,
+                            contentDescription = null
+                        )
+                    }
+                }
+                DropdownMenu(
+                    expanded = expand,
+                    onDismissRequest = {expand = false},
+                    containerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    offset = DpOffset(0.dp, 0.dp),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    options.forEach { option ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(
+                                    text = option.value
+                                )
+                            },
+                            onClick = {
+                                onSelected(option.key)
+                                expand = false
+                            }
+                        )
+                    }
                 }
             }
-            DropdownMenu(
-                expanded = expand,
-                onDismissRequest = {expand = false},
-                containerColor = MaterialTheme.colorScheme.surface,
-                offset = DpOffset(8.dp, 0.dp),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                options.forEach { option ->
-                    DropdownMenuItem(
-                        text = {
-                            Text(
-                                text = option.value,
-                                textAlign = TextAlign.Center
-                            )
-                        },
-                        onClick = {
-                            onSelected(option.key)
-                            expand = false
-                        },
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
-                    )
-                }
-            }
-        }
-    }
+        },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+        modifier = Modifier.clickable { expand = !expand }
+    )
 }
 
 
@@ -701,43 +685,42 @@ fun SettingsFieldBox(
     content: String,
     enable: Boolean = true,
     icon: ImageVector? = null,
+    trailingIcon: ImageVector? = null,
     modifier: Modifier = Modifier,
     onClick: () ->Unit
 ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-            .clickable(
-                enabled = enable
-            ) { onClick() },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Column(
-            modifier = Modifier
-                .weight(0.8f)
-                .padding(horizontal = 8.dp, vertical = 8.dp)
-        ) {
+    ListItem(
+        headlineContent = {
             Text(
                 text = stringResource(title),
-                style = MaterialTheme.typography.titleMedium,
-                color = if (enable) MaterialTheme.colorScheme.onBackground else Color.Gray
+                color = if (enable) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
             )
+        },
+        supportingContent = {
             Text(
                 text = content,
-                style = MaterialTheme.typography.bodyMedium,
-                color = if (enable) MaterialTheme.colorScheme.onBackground else Color.Gray
+                color = if (enable) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f)
             )
-        }
-        if (icon != null) {
+        },
+        leadingContent = icon?.let { {
             Icon(
-                imageVector = icon,
-                contentDescription = "",
+                imageVector = it,
+                contentDescription = null,
+                tint = if (enable) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f),
                 modifier = Modifier.size(24.dp)
-                    .weight(0.2f)
             )
-        }
-    }
+        } },
+        trailingContent = trailingIcon?.let { {
+            Icon(
+                it,
+                contentDescription = null,
+                tint = if (enable) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.38f),
+                modifier = Modifier.size(24.dp)
+            )
+        } },
+        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+        modifier = modifier.clickable(enabled = enable) { onClick() }
+    )
 }
 
 
@@ -746,22 +729,29 @@ fun SettingsGroup(
     groupName: String,
     content: @Composable ColumnScope.() -> Unit
 ) {
-    Surface(
-        color = MaterialTheme.colorScheme.surface,
-        shape = RoundedCornerShape(12.dp),
-        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
     ) {
-        Column(
+        Text(
+            text = groupName,
+            style = MaterialTheme.typography.labelLarge,
+            color = MaterialTheme.colorScheme.primary,
+            modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp)
+        )
+        Surface(
+            color = MaterialTheme.colorScheme.surfaceContainerLow,
+            shape = RoundedCornerShape(24.dp),
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 12.dp)
         ) {
-            Text(
-                text = groupName,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(vertical = 8.dp, horizontal = 8.dp)
-            )
-            content()
+            Column(
+                modifier = Modifier.padding(vertical = 4.dp)
+            ) {
+                content()
+            }
         }
     }
 }
