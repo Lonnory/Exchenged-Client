@@ -67,7 +67,7 @@ Ready to get started?
 ### Build Steps
 
 1.  **Clone the repository** (with submodules):
-    `ash
+    `
     git clone --recursive https://github.com/Q7DF1/XrayFA.git
     cd XrayFA
     `
