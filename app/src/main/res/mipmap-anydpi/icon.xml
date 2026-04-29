@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<document>
+  <record Rank="1" Name="Bitcoin" Symbol="BTC" Price="$63,544.44" h1="0.1%" h24="0.4%" d7="1.1%" MarketCap="$1,254,444,444,444" Volume24h="$22,222,222,222" CirculatingSupply="19,758,888 BTC"/>
+  <record Rank="2" Name="Ethereum" Symbol="ETH" Price="$2,444.44" h1="0.2%" h24="1.1%" d7="4.4%" MarketCap="$294,444,444,444" Volume24h="$11,111,111,111" CirculatingSupply="120,333,333 ETH"/>
+  <record Rank="3" Name="Tether USDt" Symbol="USDT" Price="$1.00" h1="0.0%" h24="0.0%" d7="0.0%" MarketCap="$119,111,111,111" Volume24h="$44,444,444,444" CirculatingSupply="119,111,111,111 USDT"/>
+  <record Rank="4" Name="BNB" Symbol="BNB" Price="$594.44" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$86,666,666,666" Volume24h="$1,111,111,111" CirculatingSupply="145,888,888 BNB"/>
+  <record Rank="5" Name="Solana" Symbol="SOL" Price="$144.44" h1="0.4%" h24="1.1%" d7="4.4%" MarketCap="$67,777,777,777" Volume24h="$2,222,222,222" CirculatingSupply="468,111,111 SOL"/>
+  <record Rank="6" Name="USDC" Symbol="USDC" Price="$1.00" h1="0.0%" h24="0.0%" d7="0.0%" MarketCap="$35,555,555,555" Volume24h="$4,444,444,444" CirculatingSupply="35,555,555,555 USDC"/>
+  <record Rank="7" Name="XRP" Symbol="XRP" Price="$0.58" h1="0.1%" h24="0.1%" d7="0.1%" MarketCap="$33,333,333,333" Volume24h="$888,888,888" CirculatingSupply="56,444,444,444 XRP"/>
+  <record Rank="8" Name="Dogecoin" Symbol="DOGE" Price="$0.10" h1="0.4%" h24="1.1%" d7="1.1%" MarketCap="$15,555,555,555" Volume24h="$555,555,555" CirculatingSupply="146,111,111,111 DOGE"/>
+  <record Rank="9" Name="Toncoin" Symbol="TON" Price="$5.55" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$14,444,444,444" Volume24h="$111,111,111" CirculatingSupply="2,533,333,333 TON"/>
+  <record Rank="10" Name="TRON" Symbol="TRX" Price="$0.15" h1="0.1%" h24="0.1%" d7="0.1%" MarketCap="$13,333,333,333" Volume24h="$222,222,222" CirculatingSupply="86,666,666,666 TRX"/>
+  <record Rank="11" Name="Cardano" Symbol="ADA" Price="$0.35" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$12,222,222,222" Volume24h="$222,222,222" CirculatingSupply="35,888,888,888 ADA"/>
+  <record Rank="12" Name="Avalanche" Symbol="AVAX" Price="$27.77" h1="0.4%" h24="1.1%" d7="11.1%" MarketCap="$11,111,111,111" Volume24h="$333,333,333" CirculatingSupply="405,111,111 AVAX"/>
+  <record Rank="13" Name="Shiba Inu" Symbol="SHIB" Price="$0.000014" h1="0.4%" h24="1.1%" d7="4.4%" MarketCap="$8,888,888,888" Volume24h="$111,111,111" CirculatingSupply="589,222,222,222,222 SHIB"/>
+  <record Rank="14" Name="Wrapped Bitcoin" Symbol="WBTC" Price="$63,544.44" h1="0.1%" h24="0.4%" d7="1.1%" MarketCap="$9,999,999,999" Volume24h="$111,111,111" CirculatingSupply="153,777 WBTC"/>
+  <record Rank="15" Name="Polkadot" Symbol="DOT" Price="$4.44" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$6,666,666,666" Volume24h="$111,111,111" CirculatingSupply="1,433,333,333 DOT"/>
+  <record Rank="16" Name="Chainlink" Symbol="LINK" Price="$11.11" h1="0.1%" h24="1.1%" d7="4.4%" MarketCap="$6,666,666,666" Volume24h="$222,222,222" CirculatingSupply="608,111,111 LINK"/>
+  <record Rank="17" Name="Bitcoin Cash" Symbol="BCH" Price="$344.44" h1="0.1%" h24="1.1%" d7="4.4%" MarketCap="$6,666,666,666" Volume24h="$222,222,222" CirculatingSupply="19,777,777 BCH"/>
+  <record Rank="18" Name="NEAR Protocol" Symbol="NEAR" Price="$4.44" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$5,555,555,555" Volume24h="$444,444,444" CirculatingSupply="1,111,111,111 NEAR"/>
+  <record Rank="19" Name="Dai" Symbol="DAI" Price="$1.00" h1="0.0%" h24="0.0%" d7="0.0%" MarketCap="$5,555,555,555" Volume24h="$111,111,111" CirculatingSupply="5,333,333,333 DAI"/>
+  <record Rank="20" Name="Litecoin" Symbol="LTC" Price="$64.44" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$4,444,444,444" Volume24h="$222,222,222" CirculatingSupply="75,111,111 LTC"/>
+  <record Rank="21" Name="Sui" Symbol="SUI" Price="$1.55" h1="0.4%" h24="4.4%" d7="44.4%" MarketCap="$4,444,444,444" Volume24h="$666,666,666" CirculatingSupply="2,688,888,888 SUI"/>
+  <record Rank="22" Name="UNUS SED LEO" Symbol="LEO" Price="$5.88" h1="0.1%" h24="0.1%" d7="0.1%" MarketCap="$5,555,555,555" Volume24h="$1,111,111" CirculatingSupply="926,111,111 LEO"/>
+  <record Rank="23" Name="Polygon" Symbol="POL" Price="$0.44" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$3,333,333,333" Volume24h="$111,111,111" CirculatingSupply="7,444,444,444 POL"/>
+  <record Rank="24" Name="Pepe" Symbol="PEPE" Price="$0.000008" h1="0.4%" h24="1.1%" d7="11.1%" MarketCap="$3,333,333,333" Volume24h="$666,666,666" CirculatingSupply="420,666,666,666,666 PEPE"/>
+  <record Rank="25" Name="Aptos" Symbol="APT" Price="$7.77" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$3,333,333,333" Volume24h="$222,222,222" CirculatingSupply="508,111,111 APT"/>
+  <record Rank="26" Name="Internet Computer" Symbol="ICP" Price="$8.88" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$4,444,444,444" Volume24h="$66,666,666" CirculatingSupply="471,111,111 ICP"/>
+  <record Rank="27" Name="Uniswap" Symbol="UNI" Price="$6.66" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$4,444,444,444" Volume24h="$111,111,111" CirculatingSupply="600,333,333 UNI"/>
+  <record Rank="28" Name="Kaspa" Symbol="KAS" Price="$0.16" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$4,444,444,444" Volume24h="$44,444,444" CirculatingSupply="24,777,777,777 KAS"/>
+  <record Rank="29" Name="Artificial Superintelligence Alliance" Symbol="FET" Price="$1.55" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$4,444,444,444" Volume24h="$222,222,222" CirculatingSupply="2,522,222,222 FET"/>
+  <record Rank="30" Name="Ethereum Classic" Symbol="ETC" Price="$18.88" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$2,222,222,222" Volume24h="$111,111,111" CirculatingSupply="148,777,777 ETC"/>
+  <record Rank="31" Name="Monero" Symbol="XMR" Price="$177.77" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$3,333,333,333" Volume24h="$44,444,444" CirculatingSupply="18,444,444 XMR"/>
+  <record Rank="32" Name="Stellar" Symbol="XLM" Price="$0.09" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$2,222,222,222" Volume24h="$44,444,444" CirculatingSupply="29,666,666,666 XLM"/>
+  <record Rank="33" Name="Stacks" Symbol="STX" Price="$1.88" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$2,222,222,222" Volume24h="$111,111,111" CirculatingSupply="1,488,888,888 STX"/>
+  <record Rank="34" Name="Bittensor" Symbol="TAO" Price="$444.44" h1="0.4%" h24="11.1%" d7="44.4%" MarketCap="$3,333,333,333" Volume24h="$222,222,222" CirculatingSupply="7,333,333 TAO"/>
+  <record Rank="35" Name="OKB" Symbol="OKB" Price="$41.11" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$2,222,222,222" Volume24h="$4,444,444" CirculatingSupply="60,000,000 OKB"/>
+  <record Rank="36" Name="Cronos" Symbol="CRO" Price="$0.08" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$2,222,222,222" Volume24h="$11,111,111" CirculatingSupply="26,888,888,888 CRO"/>
+  <record Rank="37" Name="Immutable" Symbol="IMX" Price="$1.55" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$2,222,222,222" Volume24h="$66,666,666" CirculatingSupply="1,599,999,999 IMX"/>
+  <record Rank="38" Name="Filecoin" Symbol="FIL" Price="$3.88" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$2,222,222,222" Volume24h="$66,666,666" CirculatingSupply="589,111,111 FIL"/>
+  <record Rank="39" Name="Aave" Symbol="AAVE" Price="$155.55" h1="0.1%" h24="4.4%" d7="11.1%" MarketCap="$2,222,222,222" Volume24h="$222,222,222" CirculatingSupply="14,888,888 AAVE"/>
+  <record Rank="40" Name="Injective" Symbol="INJ" Price="$21.11" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$2,222,222,222" Volume24h="$88,888,888" CirculatingSupply="97,444,444 INJ"/>
+  <record Rank="41" Name="Optimism" Symbol="OP" Price="$1.77" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$2,222,222,222" Volume24h="$111,111,111" CirculatingSupply="1,255,555,555 OP"/>
+  <record Rank="42" Name="The Graph" Symbol="GRT" Price="$0.17" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$1,111,111,111" Volume24h="$44,444,444" CirculatingSupply="9,544,444,444 GRT"/>
+  <record Rank="43" Name="Render" Symbol="RENDER" Price="$5.11" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$2,222,222,222" Volume24h="$111,111,111" CirculatingSupply="392,111,111 RENDER"/>
+  <record Rank="44" Name="VeChain" Symbol="VET" Price="$0.02" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$1,111,111,111" Volume24h="$22,222,222" CirculatingSupply="80,999,999,999 VET"/>
+  <record Rank="45" Name="Mantra" Symbol="OM" Price="$1.11" h1="0.1%" h24="4.4%" d7="11.1%" MarketCap="$999,999,999" Volume24h="$22,222,222" CirculatingSupply="844,444,444 OM"/>
+  <record Rank="46" Name="Arbitrum" Symbol="ARB" Price="$0.58" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$2,222,222,222" Volume24h="$222,222,222" CirculatingSupply="3,533,333,333 ARB"/>
+  <record Rank="47" Name="Maker" Symbol="MKR" Price="$1,555.55" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$1,111,111,111" Volume24h="$66,666,666" CirculatingSupply="888,888 MKR"/>
+  <record Rank="48" Name="Arweave" Symbol="AR" Price="$21.11" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$1,111,111,111" Volume24h="$44,444,444" CirculatingSupply="65,444,444 AR"/>
+  <record Rank="49" Name="First Digital USD" Symbol="FDUSD" Price="$1.00" h1="0.0%" h24="0.0%" d7="0.0%" MarketCap="$2,222,222,222" Volume24h="$6,666,666,666" CirculatingSupply="2,588,888,888 FDUSD"/>
+  <record Rank="50" Name="Theta Network" Symbol="THETA" Price="$1.33" h1="0.1%" h24="1.1%" d7="1.1%" MarketCap="$1,111,111,111" Volume24h="$22,222,222" CirculatingSupply="1,000,000,000 THETA"/>
+  <record Rank="51" Name="Fantom" Symbol="FTM" Price="$0.66" h1="0.4%" h24="4.4%" d7="11.1%" MarketCap="$1,111,111,111" Volume24h="$222,222,222" CirculatingSupply="2,800,000,000 FTM"/>
+</document>

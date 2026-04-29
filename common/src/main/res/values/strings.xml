@@ -1,0 +1,18 @@
+<resources>
+    <string name="theme_purple_blue">Пурпурно-синий</string>
+    <string name="theme_ocean">Океан</string>
+    <string name="theme_black_white">Черно-белый</string>
+    <string name="theme_amoled">AMOLED</string>
+    <string name="theme_light">Светлый</string>
+    <string name="theme_red_gray">Красно-серый</string>
+    <string name="theme_dynamic">Динамический</string>
+
+    <string name="wallpaper_none">Нет</string>
+    <string name="wallpaper_gradient">Градиент</string>
+    <string name="wallpaper_liquid_glass">Жидкое стекло</string>
+    <string name="wallpaper_emoji_workshop">Мастерская эмодзи</string>
+
+    <string name="russian">Русский</string>
+    <string name="english">Английский</string>
+    <string name="korean">Корейский</string>
+</resources>

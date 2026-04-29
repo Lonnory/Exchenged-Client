@@ -19,7 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "xrayfa"
+rootProject.name = "Exchenged Client"
 include(":app")
 include(":tun2socks")
 include(":common")

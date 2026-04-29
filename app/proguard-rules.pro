@@ -20,10 +20,10 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class xrayfa.tun2socks.TProxyService {
+-keep class com.exchenged.client.tun2socks.TProxyService {
     native <methods>;
 }
 
 -keepattributes SourceFile,LineNumberTable
 
--keep class com.android.xrayfa.model.** { *; }
+-keep class com.exchenged.client.model.** { *; }
