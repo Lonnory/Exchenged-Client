@@ -108,7 +108,7 @@ Exchenged Client обеспечивает безопасное и быстрое
 *   [Xray‑core](https://github.com/XTLS/Xray-core) — базовый сетевой «движок».  
 *   [AndroidLibXrayLite](https://github.com/2dust/AndroidLibXrayLite)  
 *   [hev‑socks5‑tunnel](https://github.com/heiher/hev‑socks5‑tunnel)  
-*   [XrayFa](https://github.com/Q7DF1/XrayFA)
+*   [XrayFa](https://github.com/Q7DF1/XrayFA) - «База» на которой основан Exchenged Client
 
 ---
 **Если вам нравится проект, не забудьте поставить ⭐! Спасибо😘**
