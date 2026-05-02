@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.android.xrayfa.common"
+    namespace = "com.exchenged.client.common"
     compileSdk = 36
 
     defaultConfig {

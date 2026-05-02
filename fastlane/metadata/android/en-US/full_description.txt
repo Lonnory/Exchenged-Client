@@ -1,4 +1,4 @@
-XrayFA is a powerful and user-friendly Android client for Xray-core. It provides a secure and fast proxy experience on Android devices, supporting multiple protocols including VLESS, VMESS, Shadowsocks, Trojan, Hysteria2, and Reality.
+Exchenged Client is a powerful and user-friendly Android client for Xray-core. It provides a secure and fast proxy experience on Android devices, supporting multiple protocols including VLESS, VMESS, Shadowsocks, Trojan, Hysteria2, and Reality.
 
 Key Features:
 - Support for multiple protocols: VLESS, VMESS, Shadowsocks, Trojan, Hysteria2, and Reality.
@@ -7,4 +7,4 @@ Key Features:
 - Custom Routing: Flexibly bypass or proxy traffic based on rules.
 - Modern UI: Simple and clean interface for an effortless user experience.
 
-XrayFA ensures your internet privacy and security by encrypting your traffic and bypassing local restrictions. Experience the power of Xray on your Android device with XrayFA!
+Exchenged Client ensures your internet privacy and security by encrypting your traffic and bypassing local restrictions.

@@ -1,0 +1,31 @@
+package com.exchenged.client.parser
+
+import com.exchenged.client.model.protocol.Protocol
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/**
+ * A simple factory for parsers that provides different parsers for different protocols
+ */
+@Singleton
+class ParserFactory @Inject constructor(
+    val vlessConfigParser: VLESSConfigParser,
+    val vmessConfigParser: VMESSConfigParser,
+    val trojanConfigParser: TrojanConfigParser,
+    val shadowSocksConfigParser: ShadowSocksConfigParser,
+    val hysteria2ConfigParser: Hysteria2ConfigParser
+) {
+
+    fun getParser(protocol: String): AbstractConfigParser<*,*> {
+        return when(protocol) {
+            Protocol.VLESS.protocolType -> vlessConfigParser
+            Protocol.VMESS.protocolType -> vmessConfigParser
+            Protocol.TROJAN.protocolType -> trojanConfigParser
+            Protocol.SHADOW_SOCKS.protocolType -> shadowSocksConfigParser
+            Protocol.HYSTERIA2.protocolType -> hysteria2ConfigParser
+            else -> {
+                throw IllegalArgumentException("Unsupported protocol: $protocol")
+            }
+        }
+    }
+}

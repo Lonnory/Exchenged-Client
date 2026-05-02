@@ -1,4 +1,6 @@
 import com.android.build.api.variant.FilterConfiguration.FilterType.*
+import java.util.Properties
+import java.io.ByteArrayOutputStream
 
 plugins {
     alias(libs.plugins.android.application)
@@ -9,14 +11,14 @@ plugins {
 }
 
 android {
-    namespace = "com.android.xrayfa"
+    namespace = "com.exchenged.client"
     compileSdk = 36
     ndkVersion = "27.0.12077973"
 
     defaultConfig {
         val VERSION_NAME:String by project
         val VERSION_CODE:String by project
-        applicationId = "com.android.xrayfa"
+        applicationId = "com.exchenged.client"
         minSdk = 28
         targetSdk = 36
         versionCode = VERSION_CODE.toInt()
@@ -25,7 +27,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     base {
-        archivesName.set("XrayFA")
+        archivesName.set("ExchengedClient")
     }
     signingConfigs {
         create("release") {
@@ -85,7 +87,7 @@ android {
         abi {
             isEnable = true
             reset()
-            include("armeabi-v7a","arm64-v8a","x86","x86_64")
+            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
             isUniversalApk = true
         }
     }
@@ -113,20 +115,82 @@ val aarOutput = xrayLibDir.resolve("libv2ray.aar")
 
 val libsDir = file("libs")
 
+val goExecutable: String by lazy {
+    val localProperties = Properties()
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { stream ->
+            localProperties.load(stream)
+        }
+    }
+    localProperties.getProperty("go.executable") ?: "go"
+}
+
+fun Exec.setupGoCommand(vararg args: String) {
+    val executablePath = goExecutable
+    
+    val javaHome = System.getProperty("java.home")
+    val goPath = System.getenv("GOPATH") ?: "${System.getProperty("user.home")}/go"
+    val pathSeparator = File.pathSeparator
+    
+    val goFile = File(executablePath)
+    val goBin = goFile.parentFile?.absolutePath
+    val javaBin = File(javaHome, "bin").absolutePath
+    val gomobileBin = File(goPath, "bin").absolutePath
+    
+    val currentPath = System.getenv("PATH") ?: ""
+    val paths = mutableListOf<String>()
+    if (goBin != null) paths.add(goBin)
+    paths.add(javaBin)
+    paths.add(gomobileBin)
+    paths.add(currentPath)
+    
+    environment("PATH", paths.filter { it.isNotEmpty() }.joinToString(pathSeparator))
+    environment("GOPATH", goPath)
+
+    // Set Android SDK and NDK environment variables
+    try {
+        val androidExtension = project.extensions.getByType(com.android.build.gradle.BaseExtension::class.java)
+        environment("ANDROID_HOME", androidExtension.sdkDirectory.absolutePath)
+        environment("ANDROID_NDK_HOME", androidExtension.ndkDirectory.absolutePath)
+    } catch (e: Exception) {
+        // Fallback or ignore if not available
+    }
+
+    commandLine(executablePath, *args)
+    
+    doFirst {
+        try {
+            project.exec {
+                commandLine(executablePath, "version")
+                standardOutput = ByteArrayOutputStream()
+                errorOutput = ByteArrayOutputStream()
+            }
+        } catch (e: Exception) {
+            throw GradleException(
+                "Go executable not found: '$executablePath'. \n" +
+                "Please install Go 1.21+ (https://go.dev/dl/) and ensure it is in your PATH. \n" +
+                "Alternatively, you can specify the path to the go executable in your 'local.properties' file:\n" +
+                "go.executable=C:\\\\path\\\\to\\\\go.exe"
+            )
+        }
+    }
+}
+
 tasks.register<Exec>("buildGoMobile") {
     workingDir = xrayLibDir
-    commandLine("go","install","golang.org/x/mobile/cmd/gomobile@latest")
+    setupGoCommand("install", "golang.org/x/mobile/cmd/gomobile@latest")
 }
 
 tasks.register<Exec>("initGoMobile") {
-    //dependsOn("buildGoMobile")
+    dependsOn("buildGoMobile")
     workingDir = xrayLibDir
-    commandLine("gomobile","init")
+    setupGoCommand("run", "golang.org/x/mobile/cmd/gomobile@latest", "init")
 }
 tasks.register<Exec>("goMod") {
     dependsOn("initGoMobile")
     workingDir = xrayLibDir
-    commandLine("go","mod","tidy","-v")
+    setupGoCommand("mod", "tidy", "-v")
 }
 
 
@@ -139,13 +203,13 @@ tasks.register<Exec>("bindXrayLib") {
     val currentPath = xrayLibDir.absolutePath
     environment("CGO_CFLAGS", "-ffile-prefix-map=$currentPath=.")
     environment("CGO_CXXFLAGS", "-ffile-prefix-map=$currentPath=.")
-    commandLine(
-        "gomobile",
+    setupGoCommand(
+        "run", "golang.org/x/mobile/cmd/gomobile@latest",
         "bind",
         "-v",
         "-trimpath",
         "-androidapi", "21",
-        "-ldflags=-s -w -buildid=",
+        "-ldflags", "-s -w",
         "./"
     )
     outputs.file(aarOutput)
@@ -159,7 +223,7 @@ tasks.register<Copy>("copyXrayLib") {
 
 tasks.named("preBuild") {
     // personal compile can use it,but at server use script
-    //dependsOn("copyXrayLib")
+    dependsOn("copyXrayLib")
 }
 
 
@@ -201,6 +265,7 @@ dependencies {
     implementation(libs.javax.annotation.api)
     implementation(libs.maxmind.geoip2)
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.work.runtime.ktx)
 
     implementation (libs.okhttp)
     implementation (libs.logging.interceptor)

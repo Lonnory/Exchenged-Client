@@ -1,126 +1,128 @@
 <div align="center">
 
-# 🚀 XrayFA
+# 🚀 Exchenged Client
 
-**A modern, powerful, and user-friendly Android client for [Xray-core](https://github.com/XTLS/Xray-core).**
+**Современный, мощный и удобный Android‑клиент для [Xray‑core](https://github.com/XTLS/Xray-core).**
 
-XrayFA provides a secure, high-speed proxy experience with a focus on simplicity and performance.
+Exchenged Client обеспечивает безопасное и быстрое прокси‑подключение с акцентом на простоту и производительность.
 
-<p align="center">
-  <b>English</b> | <a href="README_zh-CN.md">简体中文</a> | <a href="README_RU.md">Русский</a>
-</p>
-
-[![GitHub release](https://img.shields.io/github/v/release/Q7DF1/XrayFA?style=flat-square&color=blue)](https://github.com/Q7DF1/XrayFA/releases)
-[![GitHub license](https://img.shields.io/github/license/Q7DF1/XrayFA?style=flat-square)](https://github.com/Q7DF1/XrayFA/blob/main/LICENSE)
-[![GitHub top language](https://img.shields.io/github/languages/top/Q7DF1/XrayFA?style=flat-square)](https://github.com/Q7DF1/XrayFA)
-[![GitHub stars](https://img.shields.io/github/stars/Q7DF1/XrayFA?style=flat-square)](https://github.com/Q7DF1/XrayFA/stargazers)
+[![GitHub release](https://img.shields.io/github/v/release/Lonnory/Exchenged-Client?style=flat-square&color=blue)](https://github.com/Lonnory/Exchenged-Client/releases)
+[![GitHub license](https://img.shields.io/github/license/Lonnory/Exchenged-Client?style=flat-square)](https://github.com/Lonnory/Exchenged-Client/blob/main/LICENSE)
+[![GitHub top language](https://img.shields.io/github/languages/top/Lonnory/Exchenged-Client?style=flat-square)](https://github.com/Lonnory/Exchenged-Client)
+[![GitHub stars](https://img.shields.io/github/stars/Lonnory/Exchenged-Client?style=flat-square)](https://github.com/Lonnory/Exchenged-Client/stargazers)
 
 </div>
 
 ---
 
-## 📸 Screenshots
+## 📸 Скриншоты
 
 <div align="center">
-    <h3>Phone UI</h3>
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="30%" />
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="30%" />
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="30%" />
-    <br><br>
-    <h3>Tablet / Foldable UI</h3>
-    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.png" width="85%" />
+    <h3>Интерфейс для телефона</h3>
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/1.jpg" width="30%" />
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/2.jpg" width="30%" />
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/3.jpg" width="30%" />
+    <img src="fastlane/metadata/android/en-US/images/phoneScreenshots/4.jpg" width="30%" />
 </div>
 
 ---
 
-## ✨ Features
+## ✨ Возможности
 
-### 📡 Protocol Support
+### 📡 Поддержка протоколов
 | VLESS | VMESS | Shadowsocks | Trojan | Hysteria2 |
 | :---: | :---: | :---: | :---: | :---: |
 | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-### 🛠️ Core Capabilities
-*   **Subscription Management**: Easily import, manage, and batch-update subscription links.
-*   **Intuitive Dashboard**: Clean real-time monitoring of connection status, speed, and traffic.
-*   **Rich Configuration**: Advanced routing rules and DNS settings for power users.
-*   **Smooth UX**: Modern Material Design 3 interface with fluid animations and Dark Mode support.
-*   **Stable Engine**: Built on the latest **Xray-core** for maximum compatibility and security.
+### 🛠️ Основные функции
+*   **Управление подписками**: простой импорт, управление и пакетное обновление ссылок подписок.  
+*   **Интуитивная панель управления**: чистый мониторинг статуса подключения, скорости и трафика в реальном времени.  
+*   **Расширенные настройки**: продвинутые правила маршрутизации и настройки DNS для продвинутых пользователей.  
+*   **Удобный UX**: Обнавленный интерфейс в стиле material design 3 и разработанный специально для этого приложения emoji workshop  
+*   **Стабильный «движок»**: построен на актуальной версии **Xray‑core** для максимальной совместимости и безопасности.  
 
 ---
 
-## 📥 Download
+## 📥 Скачать
 
-Ready to get started? 
+Готовы начать работу?  
 
 <div style="display: flex; gap: 10px; align-items: center;">
-    <a href="https://github.com/Q7DF1/XrayFA/releases">
+    <a href="https://github.com/Lonnory/Exchenged-Client/releases">
         <img src="https://raw.githubusercontent.com/rubenpgrady/get-it-on-github/refs/heads/main/get-it-on-github.png" alt="Get it on GitHub" height="60">
-    </a>
-    <a href="https://f-droid.org/en/packages/com.android.xrayfa/">
-        <img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="60">
     </a>
 </div>
 
+* Скачайте .apk файл из раздела Releases или нажмите на кнопку выше.\
+
+* Установите .apk в соответствии с архитектурой вашего устройста или скачайте universal.
+
 ---
 
-## 🔨 Build from Source
+## 🔨 Сборка из исходников
 
-### Prerequisites
-* **Android Studio**: Latest stable version.
-* **JDK**: 11 or higher.
-* **Go (Golang)**: 1.21+ (Required for Xray-core compilation).
-* **Git**: For cloning submodules.
+### Предварительные требования
+* **Android Studio**: последняя стабильная версия.  
+* **JDK**: 11 и выше.  
+* **Go (Golang)**: 1.21+ (требуется для сборки Xray‑core).  
+* **Git**: для клонирования подмодулей.  
 
-### Build Steps
+### Шаги сборки
 
-1.  **Clone the repository** (with submodules):
+1.  **Клонируйте репозиторий** (вместе с подмодулями):
     `
-    git clone --recursive https://github.com/Q7DF1/XrayFA.git
-    cd XrayFA
+    git clone --recursive https://github.com/Lonnory/Exchenged-Client.git
+    cd Exchenged-Client
     `
-    *If you missed submodules:* `git submodule update --init --recursive`
+    *Если пропустили подмодули:* `git submodule update --init --recursive`
 
-2.  **Open in Android Studio**:
-    Select the `XrayFA` folder and wait for Gradle sync.
+2.  **Откройте в Android Studio**:
+    Выберите папку `Exchenged-Client` и дождитесь завершения синхронизации Gradle.
 
-3.  **Build and Run**:
-    Connect your device and press **Shift + F10**.
+3.  **Соберите и запустите**:
+    Подключите устройство и нажмите **Shift + F10**.
 
 > [!CAUTION]
-> 🚨 **IMPORTANT**: For accurate performance testing, ensure the build configuration is set to **RELEASE**. [Learn more about Compose performance](https://medium.com/androiddevelopers/why-should-you-always-test-compose-performance-in-release-4168dd0f2c71).
+> 🚨 **ВАЖНО**: для корректного тестирования производительности установите конфигурацию сборки в режим **RELEASE**. [Подробнее о производительности Compose](https://medium.com/androiddevelopers/why-should-you-always-test-compose-performance-in-release-4168dd0f2c71).
 
 ---
 
-## 📖 Quick Start
+## 📖 Быстрый старт
 
-1.  **Import Configuration**:
-    *   Click the **+** button to import from Clipboard (`vless://`, `vmess://`, etc.).
-    *   Or scan a **QR Code**.
-2.  **Manage Subscriptions**:
-    *   Navigate to **Subscription Settings** to add provider URLs.
-3.  **Connect**:
-    *   Select a node and tap the **Floating Action Button**.
-    *   Accept the VPN permission request.
+1.  **Импорт конфигурации**:
+    *   Нажмите кнопку **+**, чтобы импортировать из буфера обмена (`vless://`, `vmess://`, и т.д. А так же подписки).  
+    *   Или отсканируйте **QR‑код**.  
+
+2.  **Управление подписками**:
+    *   Все подписки выведены на главный экран в виде отдельных карточек, "как в Happ".  
+
+3.  **Подключение**:
+    *   Выберите сервер и нажмите **кнопку-действие (FAB)**.  
+    *   Подтвердите запрос разрешения VPN.  
 
 ---
 
-## 🔗 Credits & Acknowledgements
+## 🔗 Благодарности и указания
 
-Special thanks to these projects that make XrayFA possible:
-*   [Xray-core](https://github.com/XTLS/Xray-core) - The core network engine.
-*   [AndroidLibXrayLite](https://github.com/2dust/AndroidLibXrayLite)
-*   [hev-socks5-tunnel](https://github.com/heiher/hev-socks5-tunnel)
+Особая благодарность проектам:
+*   [Xray‑core](https://github.com/XTLS/Xray-core) — базовый сетевой «движок».  
+*   [AndroidLibXrayLite](https://github.com/2dust/AndroidLibXrayLite)  
+*   [hev‑socks5‑tunnel](https://github.com/heiher/hev‑socks5‑tunnel)  
+*   [XrayFa](https://github.com/Q7DF1/XrayFA) - «База» на которой основан Exchenged Client
 
-## 📄 License
+---
+**Если вам нравится проект, не забудьте поставить ⭐! Спасибо😘**
+---
 
-Distributed under the **Apache-2.0 License**. See [LICENSE](LICENSE) for details.
+## 📄 Лицензия
+
+Распространяется под лицензией **GPL-3.0 license**. Подробности в файле [LICENSE](LICENSE).
 
 ---
 <div align="center">
 
-### 🌟 Star History
+### 🌟 История звёзд
 
-[![Star History Chart](https://api.star-history.com/svg?repos=q7df1/xrayFA&type=Date)](https://star-history.com/q7df1/xrayFA)
+[![Star History Chart](https://api.star-history.com/svg?repos=Lonnory/Exchenged-Client&type=Date)](https://star-history.com/#Lonnory/Exchenged-Client&Date)
 
 </div>

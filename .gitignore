@@ -1,14 +1,16 @@
 # Gradle files
 .gradle/
 build/
+*/build/
 
 # Local configuration file (sdk path, etc)
 local.properties
 
 # Log/OS Files
 *.log
+.DS_Store
 
-#diff file
+# diff file
 *.diff
 
 # Android Studio generated files and folders
@@ -25,6 +27,8 @@ output-metadata.json
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
+modules.xml
+workspace.xml
 
 # Keystore files
 *.jks
@@ -35,3 +39,7 @@ google-services.json
 
 # Android Profiling
 *.hprof
+
+# Backup files
+*.bak
+*~

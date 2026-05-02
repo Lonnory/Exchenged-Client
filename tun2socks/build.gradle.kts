@@ -20,7 +20,7 @@ android {
 //        }
         externalNativeBuild {
             ndkBuild {
-                arguments  += listOf("APP_CFLAGS+=-DPKGNAME=xrayfa/tun2socks -ffile-prefix-map=${rootDir}=."
+                arguments  += listOf("APP_CFLAGS+=-DPKGNAME=com/exchenged/client/tun2socks -ffile-prefix-map=${rootDir}=."
                 ,"APP_LDFLAGS+=-Wl,--build-id=none")
             }
         }

@@ -1,0 +1,88 @@
+package com.exchenged.client.core
+
+import android.content.Context
+import android.content.Intent
+import android.widget.Toast
+import com.exchenged.client.R
+import com.exchenged.client.common.di.qualifier.Application
+import com.exchenged.client.repository.NodeRepository
+import com.exchenged.client.viewmodel.XrayViewmodel.Companion.EXTRA_LINK
+import com.exchenged.client.viewmodel.XrayViewmodel.Companion.EXTRA_PROTOCOL
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Singleton
+
+
+@Singleton
+class XrayBaseServiceManager
+@Inject constructor(
+    val repository: NodeRepository,
+    val trafficDetector: TrafficDetector,
+    @Application val context: Context
+) {
+
+    companion object {
+        const val TAG = "XrayBaseServiceManager"
+    }
+
+    var qsStateCallBack: (Boolean)->Unit = {}
+    var viewmodelTrafficCallback: (Pair<Double, Double>) -> Unit = {}
+
+
+    suspend fun getConfigInformation(): Pair<String,String>? {
+        val node = repository.querySelectedNode().first() ?: return null
+
+        return node.url to node.protocolPrefix
+    }
+    suspend fun startXrayBaseService(): Boolean {
+        val pair = getConfigInformation()
+        if (pair == null) {
+            withContext(Dispatchers.Main) {
+                Toast.makeText(context, R.string.config_not_ready, Toast.LENGTH_SHORT).show()
+            }
+            return false
+        }
+
+        val intent = Intent(context, XrayBaseService::class.java).apply {
+            action = XrayBaseService.CONNECT
+            putExtra(EXTRA_LINK, pair.first)
+            putExtra(EXTRA_PROTOCOL, pair.second)
+        }
+        context.startService(intent)
+        qsStateCallBack(true)
+        trafficDetector.addConsumer({
+            viewmodelTrafficCallback(it)
+        })
+        return true
+    }
+
+    fun stopXrayBaseService() {
+
+        val intent = Intent(context, XrayBaseService::class.java).apply {
+            action = XrayBaseService.DISCONNECT
+        }
+        context.startService(intent)
+        qsStateCallBack(false)
+    }
+
+
+    suspend fun restartXrayBaseServiceIfNeed() {
+        if (XrayBaseService.statusFlow.value) {
+            val pair = getConfigInformation()
+            if (pair == null) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(context, R.string.config_not_ready, Toast.LENGTH_SHORT).show()
+                }
+                return
+            }
+            val intent = Intent(context, XrayBaseService::class.java).apply {
+                action = XrayBaseService.RESTART
+                putExtra(EXTRA_LINK, pair.first)
+                putExtra(EXTRA_PROTOCOL, pair.second)
+            }
+            context.startService(intent)
+        }
+    }
+}

@@ -1,1 +1,1 @@
-XrayFA is a fast, secure, and user-friendly Android client for Xray-core.
+Exchenged Client is a fast, secure, and user-friendly Android client for Xray-core.
